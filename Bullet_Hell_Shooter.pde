@@ -1,10 +1,9 @@
 int direction;
-Player player = new Player(width/2, height/2);
-int timeOfLastKeyPressedHor;
-int timeOfLastKeyPressedVer;
+Player player;
 
 void setup() {
   size(1200, 800);
+  player = new Player(width/2, height/2);
 }
 
 void draw() {
@@ -17,6 +16,7 @@ class Player {
   int y;
   int speed;
   int directionModifier;
+  float angle;
   boolean[] moving;
   boolean[] facing;
 
@@ -60,67 +60,22 @@ class Player {
   void display() {
     pushMatrix();
     translate(x, y);
-    rotate(PI/4 * getDirectionModifier());
+    setAngle();
+    rotate(getAngle());
     ellipse(0, 0, 10, 10);
     line(0, 0, 0, -10);
     popMatrix();
   } 
 
+  void setAngle() { 
+    angle = PI/4 * getDirectionModifier();
+  }
+
+  float getAngle() {
+    return angle;
+  }
+
   void setDirection() {
-    /*
-    if (abs(timeOfLastKeyPressedHor - timeOfLastKeyPressedVer) <= 100) {
-     if (isFacing(0) && isFacing(3)) {
-     setDirectionModifier(1);
-     } else if (isFacing(2) && isFacing(3)) {
-     setDirectionModifier(3);
-     } else if (isFacing(2) && isFacing(1)) {
-     setDirectionModifier(5);
-     } else if (isFacing(0) && isFacing(1)) {
-     setDirectionModifier(7);
-     }
-     } else {
-     if (timeOfLastKeyPressedHor > timeOfLastKeyPressedVer) {
-     if (isFacing(0)) {
-     setDirectionModifier(0);
-     } 
-     if (isFacing(2)) {
-     setDirectionModifier(4);
-     }
-     } else {
-     if (isFacing(3)) {
-     setDirectionModifier(2);
-     } 
-     if (isFacing(1)) {
-     setDirectionModifier(6);
-     }
-     }
-     }
-     */
-    /*
-    if (isFacing(0) && isFacing(3)) {
-     setDirectionModifier(1);
-     } else if (isFacing(2) && isFacing(3)) {
-     setDirectionModifier(3);
-     } else if (isFacing(2) && isFacing(1)) {
-     setDirectionModifier(5);
-     } else if (isFacing(0) && isFacing(1)) {
-     setDirectionModifier(7);
-     }
-     
-     if (isFacing(0)) {
-     setDirectionModifier(0);
-     } 
-     if (isFacing(2)) {
-     setDirectionModifier(4);
-     }
-     
-     if (isFacing(3)) {
-     setDirectionModifier(2);
-     } 
-     if (isFacing(1)) {
-     setDirectionModifier(6);
-     }
-     */
     int count=0;
     for (int i=0; i<4; i++) {
       if (isFacing(i)) {
@@ -140,20 +95,15 @@ class Player {
     } else {
       if (isFacing(0)) {
         setDirectionModifier(0);
-      } 
-      else if (isFacing(2)) {
+      } else if (isFacing(2)) {
         setDirectionModifier(4);
-      }
-
-      else if (isFacing(3)) {
+      } else if (isFacing(3)) {
         setDirectionModifier(2);
-      } 
-      else if (isFacing(1)) {
+      } else if (isFacing(1)) {
         setDirectionModifier(6);
       }
     }
   }
-
 
   void shouldMove(int direction, boolean val) {
     moving[direction] = val;
@@ -171,8 +121,8 @@ class Player {
     return facing[direction];
   }
 
-  void setDirectionModifier(int i) {
-    directionModifier = i;
+  void setDirectionModifier(int value) {
+    directionModifier = value;
   }
 
   int getDirectionModifier() {
@@ -182,22 +132,18 @@ class Player {
 
 public void keyPressed() {
   if (keyCode == UP) {
-    timeOfLastKeyPressedHor = millis();
     player.shouldFace(0, true);
   }
 
   if (keyCode == LEFT) {
-    timeOfLastKeyPressedVer = millis();
     player.shouldFace(1, true);
   }
 
   if (keyCode == DOWN) {
-    timeOfLastKeyPressedHor = millis();
     player.shouldFace(2, true);
   }
 
   if (keyCode == RIGHT) {
-    timeOfLastKeyPressedVer = millis();
     player.shouldFace(3, true);
   }
   if (key == 'w') {
