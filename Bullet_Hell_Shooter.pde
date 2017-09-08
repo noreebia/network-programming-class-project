@@ -1,14 +1,27 @@
 int direction;
 Player player;
+ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 
 void setup() {
   size(1200, 800);
   player = new Player(width/2, height/2);
+  initializeEnemies();
+}
+
+void initializeEnemies(){
+  for(int i=0; i< 50; i++){
+   enemies.add(new Enemy(int(random(0, width)), int(random(0, height)), player)); 
+  }
 }
 
 void draw() {
   background(255);
   player.run();
+  
+  for(Enemy e: enemies){
+    e.run();
+  }
+  
 }
 
 public void keyPressed() {

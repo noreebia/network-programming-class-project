@@ -1,7 +1,10 @@
 class Player {
-  int x;
-  int y;
-  int speed;
+  float x;
+  float y;
+  float speed;
+
+  float originalSpeed;
+  float diagonalSpeed;
   int directionModifier;
   float angle;
   boolean[] moving;
@@ -10,7 +13,10 @@ class Player {
   Player(int x, int y) {
     this.x = x;
     this.y = y;
-    this.speed = 5;
+
+    originalSpeed = 5;
+    diagonalSpeed = originalSpeed/sqrt(2);
+
     this.directionModifier = 0;
     this.moving = new boolean[4];
     this.facing = new boolean[4];
@@ -24,9 +30,28 @@ class Player {
   }
 
   void run() {
-    setDirection();
+    adjustSpeed();
     move();
+    setDirection();
     display();
+  }
+
+  void adjustSpeed() {
+    int count=0;
+    for (int i=0; i<4; i++) {
+      if (moving[i]) {
+        count++;
+      }
+    }
+    if (count >= 2) {
+      setSpeed(diagonalSpeed);
+    } else {
+      setSpeed(originalSpeed);
+    }
+  }
+
+  void setSpeed(float speed) {
+    this.speed = speed;
   }
 
   void move() {
@@ -74,10 +99,13 @@ class Player {
         setDirectionModifier(1);
       } else if (isFacing(2) && isFacing(3)) {
         setDirectionModifier(3);
+        this.speed = diagonalSpeed;
       } else if (isFacing(2) && isFacing(1)) {
         setDirectionModifier(5);
+        this.speed = diagonalSpeed;
       } else if (isFacing(0) && isFacing(1)) {
         setDirectionModifier(7);
+        this.speed = diagonalSpeed;
       }
     } else {
       if (isFacing(0)) {
