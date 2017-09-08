@@ -4,6 +4,7 @@ class Enemy {
   int destX;
   int destY;
   int radius;
+  int offset;
   float velocityX;
   float velocityY;
   float speed;
@@ -14,8 +15,9 @@ class Enemy {
     this.x = x;
     this.y = y;
     this.radius = 10;
+    this.offset = radius + 50;
     this.target = target;
-    this.speed = 5;
+    this.speed = 1.5;
     setVelocity();
   }
 
@@ -26,12 +28,11 @@ class Enemy {
    */
    
   void run() {
-    if (isOutOfMap()) {
+    if (isOutsideOfMap()) {
       setVelocity();
     }
     move();
     display();
-    //print("10");
   }
 
   void move() {
@@ -43,8 +44,8 @@ class Enemy {
     ellipse(x, y, radius, radius);
   }
 
-  boolean isOutOfMap() {
-    if (x<-radius && x>(width+radius) && y<-radius && y>(height+radius)) {
+  boolean isOutsideOfMap() {
+    if (x<-radius || x>(width+offset) || y<-radius || y>(height+offset)) {
       return true;
     }
     return false;
@@ -65,7 +66,7 @@ class Enemy {
     float dx = target.x - this.x;
     float dy = target.y - this.y;
 
-    float mag = sqrt(dx * dx * dy * dy);
+    float mag = sqrt(dx * dx + dy * dy);
     this.velocityX = (dx/mag) * this.speed;
     this.velocityY = (dy/mag) * this.speed;
   }
