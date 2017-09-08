@@ -4,24 +4,28 @@ ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 
 void setup() {
   size(1200, 800);
+  strokeWeight(2);
+  stroke(255);
   player = new Player(width/2, height/2);
   initializeEnemies();
 }
 
-void initializeEnemies(){
-  for(int i=0; i< 50; i++){
-   enemies.add(new Enemy(int(random(0, width)), int(random(0, height)), player)); 
+void initializeEnemies() {
+  for (int i=0; i< 100; i++) {
+    enemies.add(new Enemy(random(0, width), (random(0, height)) ));
+    enemies.get(i).setTarget(player);
+    enemies.get(i).setVelocity();
   }
 }
 
 void draw() {
-  background(255);
-  player.run();
+  background(0);
   
-  for(Enemy e: enemies){
+  player.run();
+
+  for (Enemy e : enemies) {
     e.run();
   }
-  
 }
 
 public void keyPressed() {

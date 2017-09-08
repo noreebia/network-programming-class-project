@@ -2,10 +2,12 @@ class Player {
   float x;
   float y;
   float speed;
-
+  int radius;
   float originalSpeed;
   float diagonalSpeed;
   int directionModifier;
+  int gunLength;
+  int gunWidth;
   float angle;
   boolean[] moving;
   boolean[] facing;
@@ -13,13 +15,15 @@ class Player {
   Player(int x, int y) {
     this.x = x;
     this.y = y;
-
-    originalSpeed = 5;
+    this.radius = 20;
+    originalSpeed = 4;
     diagonalSpeed = originalSpeed/sqrt(2);
 
     this.directionModifier = 0;
     this.moving = new boolean[4];
     this.facing = new boolean[4];
+    this.gunLength = 9;
+    this.gunWidth = 4;
     stopAllMovement();
   }
 
@@ -74,8 +78,11 @@ class Player {
     translate(x, y);
     setAngle();
     rotate(getAngle());
-    ellipse(0, 0, 10, 10);
-    line(0, 0, 0, -10);
+    fill(0,255,255);
+
+
+    ellipse(0, 0, radius, radius);
+    rect(-gunWidth/2, -radius/2, gunWidth, -gunLength);
     popMatrix();
   } 
 

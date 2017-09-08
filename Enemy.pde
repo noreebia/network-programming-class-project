@@ -8,25 +8,30 @@ class Enemy {
   float velocityX;
   float velocityY;
   float speed;
-  // ArrayList<Player> targets = new ArrayList<Player>();
   Player target;
 
-  Enemy(int x, int y, Player target) {
+  Enemy(float x, float y, Player target) {
     this.x = x;
     this.y = y;
-    this.radius = 10;
+    this.radius = 20;
     this.offset = radius + 50;
-    this.target = target;
     this.speed = 1.5;
+    this.target = target;
     setVelocity();
   }
 
-  /*
-  void addTarget(Player target) {
-   this.targets.add(target);
-   }
-   */
-   
+  Enemy(float x, float y) {
+    this.x = x;
+    this.y = y;
+    this.radius = 20;
+    this.offset = radius + 50;
+    this.speed = 1.5;
+  }
+
+  void setTarget(Player target) {
+    this.target = target;
+  }
+
   void run() {
     if (isOutsideOfMap()) {
       setVelocity();
@@ -41,6 +46,7 @@ class Enemy {
   }
 
   void display() {
+    fill(255,128,0);
     ellipse(x, y, radius, radius);
   }
 
@@ -51,17 +57,17 @@ class Enemy {
     return false;
   }
 
-/*
+  /*
   void setDestAndVel() {
-    setDestination();
-    setVelocity();
-  }
-
-  void setDestination() {
-    this.destX = target.x;
-    this.destY = target.y;
-  }
-*/
+   setDestination();
+   setVelocity();
+   }
+   
+   void setDestination() {
+   this.destX = target.x;
+   this.destY = target.y;
+   }
+   */
   void setVelocity() {
     float dx = target.x - this.x;
     float dy = target.y - this.y;
