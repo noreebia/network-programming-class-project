@@ -3,20 +3,22 @@ class Bullet {
   float y;
   int direction;
   int radius;
-  boolean isLaunched;
   float originalSpeed;
   float diagonalSpeed;
   float speed;
+  boolean isActive;
+  int[] rgb = new int[3];
 
-  Bullet(float x, float y, int direction) {
+  Bullet(float x, float y, int direction, int[] rgb) {
     this.x = x;
     this.y = y;
     this.originalSpeed = 10;
     this.diagonalSpeed = originalSpeed/sqrt(2);
     this.direction = direction;
     this.radius = 15;
+    this.rgb = rgb;
+    this.isActive = true;
     setSpeed();
-    isLaunched = false;
   }
 
   void setSpeed() {
@@ -27,54 +29,52 @@ class Bullet {
     }
   }
 
+  void display() {
+    fill(rgb[0], rgb[1], rgb[2]);
+    ellipse(x, y, radius, radius);
+  }
+
+  void move() {
+    switch(direction) {
+    case 0:
+      y -= speed;
+      break;
+    case 1:
+      x += speed;
+      y -= speed;
+      break;
+    case 2:
+      x += speed;
+      break;
+    case 3:
+      y += speed;
+      x += speed;
+      break;
+    case 4:
+      y += speed;
+      break;
+    case 5:
+      x -= speed;
+      y += speed;
+      break;
+    case 6:
+      x -= speed;
+      break;
+    case 7:
+      x -= speed;
+      y -= speed;
+      break;
+    }
+  }
+
+  void deactivate() {
+    this.isActive = false;
+  }
+
   boolean isOutOfMap() {
     if (x<-radius || x>(width+radius) || y<-radius || y>(height+radius)) {
       return true;
     }
     return false;
-  }
-
-  void display() {
-    fill(255);
-    ellipse(x, y, radius, radius);
-  }
-
-  void launch() {
-    isLaunched = true;
-  }
-
-  void move() {
-    if (isLaunched) {
-      switch(direction) {
-      case 0:
-        y -= speed;
-        break;
-      case 1:
-        x += speed;
-        y -= speed;
-        break;
-      case 2:
-        x += speed;
-        break;
-      case 3:
-        y += speed;
-        x += speed;
-        break;
-      case 4:
-        y += speed;
-        break;
-      case 5:
-        x -= speed;
-        y += speed;
-        break;
-      case 6:
-        x -= speed;
-        break;
-      case 7:
-        x -= speed;
-        y -= speed;
-        break;
-      }
-    }
   }
 }

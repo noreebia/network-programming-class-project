@@ -20,9 +20,7 @@ void initializeEnemies() {
 
 void draw() {
   background(0);
-  
   player.run();
-
   for (Enemy e : enemies) {
     e.run();
   }
@@ -56,7 +54,7 @@ public void keyPressed() {
   if (key == 'd') {
     player.shouldMove(3, true);
   }
-  if(key == ' '){
+  if (key == ' ') {
     player.shoot();
   }
 }
@@ -89,7 +87,7 @@ public void keyReleased() {
   if (key == 'd') {
     player.shouldMove(3, false);
   }
-    if(key == ' '){
-    player.holdFire();
+  if (key == ' ') {
+    player.stopShooting();
   }
 }

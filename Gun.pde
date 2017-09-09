@@ -5,7 +5,6 @@ class Gun {
   int gWidth;
   float reloadingTime;
   int lastFiredTime;
-  int currentTime;
   ArrayList<Bullet> bullets = new ArrayList<Bullet>();
   boolean isFiring;
 
@@ -28,19 +27,9 @@ class Gun {
   }
 
   void fire() {
-    /*
-    float bulletSpawnX;
-    float bulletSpawnY;
-    */
     if (isFiring) {
-      currentTime = millis();
-      if (currentTime - lastFiredTime >= reloadingTime) {
-        /*
-        bulletSpawnX = (float)(owner.x +   Math.sin(owner.directionModifier * PI/4) * gLength);
-        bulletSpawnY = (float)(owner.y -   Math.cos(owner.directionModifier * PI/4) * gLength);
-        */
-        bullets.add(new Bullet(owner.x, owner.y, owner.directionModifier));
-        bullets.get(bullets.size() - 1).launch();
+      if (millis() - lastFiredTime >= reloadingTime) {
+        bullets.add(new Bullet(owner.x, owner.y, owner.directionModifier, owner.rgb));
         lastFiredTime = millis();
       }
     }
