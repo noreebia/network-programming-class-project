@@ -33,7 +33,7 @@ class Enemy {
   }
 
   void run() {
-    if (isOutsideOfMap()) {
+    if (isOutOfMap()) {
       setVelocity();
     }
     move();
@@ -50,7 +50,7 @@ class Enemy {
     ellipse(x, y, radius, radius);
   }
 
-  boolean isOutsideOfMap() {
+  boolean isOutOfMap() {
     if (x<-radius || x>(width+offset) || y<-radius || y>(height+offset)) {
       return true;
     }

@@ -6,24 +6,22 @@ class Player {
   float originalSpeed;
   float diagonalSpeed;
   int directionModifier;
-  int gunLength;
-  int gunWidth;
   float angle;
+  int[] rgb = {0, 255, 255};
   boolean[] moving;
   boolean[] facing;
+  Gun gun;
 
   Player(int x, int y) {
     this.x = x;
     this.y = y;
     this.radius = 20;
-    originalSpeed = 4;
-    diagonalSpeed = originalSpeed/sqrt(2);
-
+    this.originalSpeed = 4;
+    this.diagonalSpeed = originalSpeed/sqrt(2);
     this.directionModifier = 0;
     this.moving = new boolean[4];
     this.facing = new boolean[4];
-    this.gunLength = 9;
-    this.gunWidth = 4;
+    this.gun = new Gun(this);
     stopAllMovement();
   }
 
@@ -37,6 +35,7 @@ class Player {
     adjustSpeed();
     move();
     setDirection();
+    gun.run();
     display();
   }
 
@@ -73,21 +72,27 @@ class Player {
     }
   }
 
+  void shoot() {
+    this.gun.shouldFire(true);
+  }
+
+  void holdFire() {
+    this.gun.shouldFire(false);
+  }
+
   void display() {
     pushMatrix();
     translate(x, y);
     setAngle();
     rotate(getAngle());
-    fill(0,255,255);
-
-
+    fill(rgb[0], rgb[1], rgb[2]);
     ellipse(0, 0, radius, radius);
-    rect(-gunWidth/2, -radius/2, gunWidth, -gunLength);
+    gun.display();
     popMatrix();
   } 
 
   void setAngle() { 
-    angle = PI/4 * getDirectionModifier();
+    angle = PI/4 * this.directionModifier;
   }
 
   float getAngle() {
@@ -145,9 +150,5 @@ class Player {
 
   void setDirectionModifier(int value) {
     directionModifier = value;
-  }
-
-  int getDirectionModifier() {
-    return directionModifier;
   }
 }

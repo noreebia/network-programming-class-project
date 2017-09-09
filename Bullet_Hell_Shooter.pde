@@ -56,6 +56,9 @@ public void keyPressed() {
   if (key == 'd') {
     player.shouldMove(3, true);
   }
+  if(key == ' '){
+    player.shoot();
+  }
 }
 
 public void keyReleased() {
@@ -85,5 +88,8 @@ public void keyReleased() {
   }
   if (key == 'd') {
     player.shouldMove(3, false);
+  }
+    if(key == ' '){
+    player.holdFire();
   }
 }
