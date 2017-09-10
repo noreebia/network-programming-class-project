@@ -24,7 +24,35 @@ void draw() {
   for (Enemy e : enemies) {
     e.run();
   }
+  handleBulletEnemyCollision();
 }
+
+void handleBulletEnemyCollision() {
+  int i, k;
+  for (i=0; i<player.gun.bullets.size(); i++) {
+    for (k=0; k<enemies.size(); k++) {
+      if(isBulletCollidingWithEnemy(i, k)){
+        player.gun.bullets.get(i).deactivate();
+        enemies.get(k).respawn();
+      }
+    }
+  }
+}
+
+boolean isBulletCollidingWithEnemy(int i, int k) {
+  float distX = player.gun.bullets.get(i).x - enemies.get(k).x;
+  float distY = player.gun.bullets.get(i).y - enemies.get(k).y;
+
+  if (getDistanceBetween(distX, distY) <= player.gun.bullets.get(i).radius + enemies.get(k).radius) {
+    return true;
+  }
+  return false;
+}
+
+float getDistanceBetween(float valOne, float valTwo) {
+  return sqrt(valOne * valOne + valTwo * valTwo);
+}
+
 
 public void keyPressed() {
   if (keyCode == UP) {

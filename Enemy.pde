@@ -46,7 +46,7 @@ class Enemy {
   }
 
   void display() {
-    fill(255,128,0);
+    fill(255, 128, 0);
     ellipse(x, y, radius, radius);
   }
 
@@ -75,5 +75,26 @@ class Enemy {
     float mag = sqrt(dx * dx + dy * dy);
     this.velocityX = (dx/mag) * this.speed;
     this.velocityY = (dy/mag) * this.speed;
+  }
+
+  void respawn() {
+    switch((int)random(0, 4)) {
+    case 0:
+      this.x = width/2;
+      this.y = -offset;
+      break;
+    case 1:
+      this.x = width + offset;
+      this.y = height/2;
+      break;
+    case 2:
+      this.x = width/2;
+      this.y = height + offset;
+      break;
+    case 3:
+      this.x = -offset;
+      this.y = height/2;
+      break;
+    }
   }
 }

@@ -40,7 +40,7 @@ class Gun {
       bullets.get(i).move();
       bullets.get(i).display();
 
-      if (bullets.get(i).isOutOfMap()) {
+      if (bullets.get(i).isOutOfMap() || !bullets.get(i).isActive) {
         bullets.remove(i);
       }
     }
