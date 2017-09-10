@@ -15,7 +15,7 @@ class Player {
   Player(int x, int y) {
     this.x = x;
     this.y = y;
-    this.radius = 20;
+    this.radius = 10;
     this.originalSpeed = 4;
     this.diagonalSpeed = originalSpeed/sqrt(2);
     this.directionModifier = 0;
@@ -79,7 +79,7 @@ class Player {
     setAngle();
     rotate(angle);
     fill(rgb[0], rgb[1], rgb[2]);
-    ellipse(0, 0, radius, radius);
+    ellipse(0, 0, radius*2, radius*2);
     gun.display();
     popMatrix();
   } 

@@ -15,7 +15,7 @@ class Bullet {
     this.originalSpeed = 10;
     this.diagonalSpeed = originalSpeed/sqrt(2);
     this.direction = direction;
-    this.radius = 15;
+    this.radius = 8;
     this.rgb = rgb;
     this.isActive = true;
     setSpeed();
@@ -31,7 +31,7 @@ class Bullet {
 
   void display() {
     fill(rgb[0], rgb[1], rgb[2]);
-    ellipse(x, y, radius, radius);
+    ellipse(x, y, radius*2, radius*2);
   }
 
   void move() {

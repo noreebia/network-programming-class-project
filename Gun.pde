@@ -23,13 +23,17 @@ class Gun {
   }
 
   void display() {
-    rect(-gWidth/2, -owner.radius/2, gWidth, -gLength);
+    rect(-gWidth/2, -owner.radius, gWidth, -gLength);
   }
 
   void fire() {
+    float bulletSpawnX;
+    float bulletSpawnY;
     if (isFiring) {
+      bulletSpawnX = (float)(owner.x +  1.5 * Math.sin(owner.directionModifier * PI/4) * gLength);
+      bulletSpawnY = (float)(owner.y -  1.5 * Math.cos(owner.directionModifier * PI/4) * gLength);
       if (millis() - lastFiredTime >= reloadingTime) {
-        bullets.add(new Bullet(owner.x, owner.y, owner.directionModifier, owner.rgb));
+        bullets.add(new Bullet(bulletSpawnX, bulletSpawnY, owner.directionModifier, owner.rgb));
         lastFiredTime = millis();
       }
     }

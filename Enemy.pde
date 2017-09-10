@@ -13,8 +13,8 @@ class Enemy {
   Enemy(float x, float y, Player target) {
     this.x = x;
     this.y = y;
-    this.radius = 20;
-    this.offset = radius + 50;
+    this.radius = 10;
+    this.offset = radius + 100;
     this.speed = 1.5;
     this.target = target;
     setVelocity();
@@ -23,7 +23,7 @@ class Enemy {
   Enemy(float x, float y) {
     this.x = x;
     this.y = y;
-    this.radius = 20;
+    this.radius = 10;
     this.offset = radius + 50;
     this.speed = 1.5;
   }
@@ -47,11 +47,11 @@ class Enemy {
 
   void display() {
     fill(255, 128, 0);
-    ellipse(x, y, radius, radius);
+    ellipse(x, y, radius*2, radius*2);
   }
 
   boolean isOutOfMap() {
-    if (x<-radius || x>(width+offset) || y<-radius || y>(height+offset)) {
+    if (x<-offset || x>(width+offset) || y<-offset || y>(height+offset)) {
       return true;
     }
     return false;
