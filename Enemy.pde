@@ -80,20 +80,20 @@ class Enemy {
   void respawn() {
     switch((int)random(0, 4)) {
     case 0:
-      this.x = width/2;
+      this.x = random(width);
       this.y = -offset;
       break;
     case 1:
       this.x = width + offset;
-      this.y = height/2;
+      this.y = random(height);
       break;
     case 2:
-      this.x = width/2;
+      this.x = random(width);
       this.y = height + offset;
       break;
     case 3:
       this.x = -offset;
-      this.y = height/2;
+      this.y = random(height);
       break;
     }
   }
