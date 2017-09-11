@@ -1,25 +1,20 @@
 class Gun {
   Player owner;
 
-  int gLength;
-  int gWidth;
-  float reloadingTime;
-  int lastFiredTime;
+  int gLength = 9;
+  int gWidth = 4;
+  float reloadingTime = 100;
+  int lastFiredTime = 0;
   ArrayList<Bullet> bullets = new ArrayList<Bullet>();
   boolean isFiring;
 
   Gun(Player owner) {
     this.owner = owner;
-    this.gLength = 9;
-    this.gWidth = 4;
-    this.lastFiredTime = 0;
-    this.reloadingTime = 100;
   }
 
   void run() {
     fire();
     manageBullets();
-    print(bullets.size() + " ");
   }
 
   void display() {

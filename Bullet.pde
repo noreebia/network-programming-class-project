@@ -1,23 +1,20 @@
 class Bullet {
   float x;
   float y;
-  int direction;
-  int radius;
-  float originalSpeed;
-  float diagonalSpeed;
   float speed;
-  boolean isActive;
+  int direction;
+  
+  int radius = 8;
+  float originalSpeed = 10;
+  float diagonalSpeed = originalSpeed/sqrt(2);
+  boolean isActive = true;
   int[] rgb = new int[3];
 
   Bullet(float x, float y, int direction, int[] rgb) {
     this.x = x;
     this.y = y;
-    this.originalSpeed = 10;
-    this.diagonalSpeed = originalSpeed/sqrt(2);
     this.direction = direction;
-    this.radius = 8;
     this.rgb = rgb;
-    this.isActive = true;
     setSpeed();
   }
 

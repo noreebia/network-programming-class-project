@@ -1,21 +1,18 @@
 class Enemy {
+  Player target;
+
   float x;
   float y;
-  int destX;
-  int destY;
-  int radius;
-  int offset;
   float velocityX;
   float velocityY;
-  float speed;
-  Player target;
+
+  int radius = 10;
+  int offset = radius + 50;
+  float speed = 1.5;
 
   Enemy(float x, float y, Player target) {
     this.x = x;
     this.y = y;
-    this.radius = 10;
-    this.offset = radius + 100;
-    this.speed = 1.5;
     this.target = target;
     setVelocity();
   }
@@ -23,9 +20,6 @@ class Enemy {
   Enemy(float x, float y) {
     this.x = x;
     this.y = y;
-    this.radius = 10;
-    this.offset = radius + 50;
-    this.speed = 1.5;
   }
 
   void setTarget(Player target) {

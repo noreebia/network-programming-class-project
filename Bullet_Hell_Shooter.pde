@@ -49,8 +49,8 @@ boolean isBulletCollidingWithEnemy(int i, int k) {
   return false;
 }
 
-float getDistanceBetween(float valOne, float valTwo) {
-  return sqrt(valOne * valOne + valTwo * valTwo);
+float getDistanceBetween(float x, float y) {
+  return sqrt(x * x + y * y);
 }
 
 

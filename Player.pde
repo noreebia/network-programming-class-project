@@ -1,27 +1,24 @@
 class Player {
+  Gun gun = new Gun(this);
+
   float x;
   float y;
   float speed;
-  int radius;
-  float originalSpeed;
-  float diagonalSpeed;
-  int directionModifier;
   float angle;
+
+  int radius = 10;
+  float originalSpeed = 4;
+  float diagonalSpeed = originalSpeed/sqrt(2);
+  int directionModifier = 0;
+
   int[] rgb = {0, 255, 255};
-  boolean[] moving;
-  boolean[] facing;
-  Gun gun;
+  boolean[] moving = new boolean[4];
+  boolean[] facing = new boolean[4];
+
 
   Player(int x, int y) {
     this.x = x;
     this.y = y;
-    this.radius = 10;
-    this.originalSpeed = 4;
-    this.diagonalSpeed = originalSpeed/sqrt(2);
-    this.directionModifier = 0;
-    this.moving = new boolean[4];
-    this.facing = new boolean[4];
-    this.gun = new Gun(this);
   }
 
   void run() {
