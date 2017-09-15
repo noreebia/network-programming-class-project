@@ -1,36 +1,20 @@
 class Enemy {
-  Player target;
-
-/*
-  float x;
-  float y;
-  float velocityX;
-  float velocityY;
-  */
   PVector location = new PVector();
   PVector velocity = new PVector();
-
   int radius = 10;
   int offset = radius + 50;
   float speed = 1.5;
 
+  Player target;
+
   Enemy(float x, float y, Player target) {
-    /*
-    this.x = x;
-    this.y = y;
-    */
     location.x = x;
     location.y = y;
-    
     this.target = target;
     setVelocity();
   }
 
   Enemy(float x, float y) {
-    /*
-    this.x = x;
-    this.y = y;
-    */
     location.x = x;
     location.y = y;
   }
@@ -47,11 +31,12 @@ class Enemy {
     display();
   }
 
+  void setVelocity() {
+    velocity.set(target.location.x - this.location.x, target.location.y - this.location.y);
+    velocity.normalize();
+  }
+
   void move() {
-    /*
-    this.x += velocityX;
-    this.y += velocityY;
-    */
     location.add(velocity.x * speed, velocity.y * speed);
   }
 
@@ -65,30 +50,6 @@ class Enemy {
       return true;
     }
     return false;
-  }
-
-  /*
-  void setDestAndVel() {
-   setDestination();
-   setVelocity();
-   }
-   
-   void setDestination() {
-   this.destX = target.x;
-   this.destY = target.y;
-   }
-   */
-  void setVelocity() {
-    /*
-    float dx = target.x - this.x;
-    float dy = target.y - this.y;
-
-    float mag = sqrt(dx * dx + dy * dy);
-    this.velocityX = (dx/mag) * this.speed;
-    this.velocityY = (dy/mag) * this.speed;
-    */
-    velocity.set(target.location.x - this.location.x, target.location.y - this.location.y);
-    velocity.normalize();
   }
 
   void respawn() {

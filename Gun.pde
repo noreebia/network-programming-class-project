@@ -1,12 +1,11 @@
 class Gun {
   Player owner;
-
+  boolean isFiring;
   int gLength = 9;
   int gWidth = 4;
-  float reloadingTime = 100;
   int lastFiredTime = 0;
+  float reloadingTime = 100;
   ArrayList<Bullet> bullets = new ArrayList<Bullet>();
-  boolean isFiring;
 
   Gun(Player owner) {
     this.owner = owner;
@@ -14,7 +13,8 @@ class Gun {
 
   void run() {
     fire();
-    manageBullets();
+    runBullets();
+    print(bullets.size() + " ");
   }
 
   void display() {
@@ -22,11 +22,9 @@ class Gun {
   }
 
   void fire() {
-    float bulletSpawnX;
-    float bulletSpawnY;
     if (isFiring) {
-      bulletSpawnX = (float)(owner.location.x +  1.5 * Math.sin(owner.directionModifier * PI/4) * gLength);
-      bulletSpawnY = (float)(owner.location.y -  1.5 * Math.cos(owner.directionModifier * PI/4) * gLength);
+      float bulletSpawnX = (float)(owner.location.x +  1.5 * Math.sin(owner.directionModifier * PI/4) * gLength);
+      float bulletSpawnY = (float)(owner.location.y -  1.5 * Math.cos(owner.directionModifier * PI/4) * gLength);
       if (millis() - lastFiredTime >= reloadingTime) {
         bullets.add(new Bullet(bulletSpawnX, bulletSpawnY, owner.directionModifier, owner.rgb));
         lastFiredTime = millis();
@@ -34,14 +32,9 @@ class Gun {
     }
   }
 
-  void manageBullets() {
+  void runBullets() {
     for (int i=0; i<bullets.size(); i++) {
-      /*
-      bullets.get(i).move();
-      bullets.get(i).display();
-      */
       bullets.get(i).run();
-
       if (bullets.get(i).isOutOfMap() || !bullets.get(i).isActive) {
         bullets.remove(i);
       }

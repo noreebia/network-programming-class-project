@@ -1,82 +1,52 @@
 class Player {
-  Gun gun = new Gun(this);
-
-  //float x;
-  //float y;
-  float speed = 5;
+  PVector location = new PVector();
+  PVector velocity = new PVector();
   float angle;
-
+  float speed = 4;
   int radius = 10;
-  float originalSpeed = 4;
-  float diagonalSpeed = originalSpeed/sqrt(2);
   int directionModifier = 0;
-
   int[] rgb = {0, 255, 255};
   boolean[] moving = new boolean[4];
   boolean[] facing = new boolean[4];
 
-  PVector location = new PVector();
-  PVector velocity = new PVector(0, 0);
-
+  Gun gun = new Gun(this);
 
   Player(int x, int y) {
-    //this.x = x;
-    //this.y = y;
-
     location.x = x;
     location.y = y;
-    
   }
 
   void run() {
-    //adjustSpeed();
-        setVelocity();
+    setVelocity(0, 0);
+    adjustVelocity();
     move();
     setDirection();
     gun.run();
     display();
-    velocity.set(0, 0);
   }
 
-  void adjustSpeed() {
-    int count=0;
-    for (int i=0; i<4; i++) {
-      if (moving[i]) {
-        count++;
-      }
-    }
-    if (count >= 2) {
-      setSpeed(diagonalSpeed);
-    } else {
-      setSpeed(originalSpeed);
-    }
+  void setVelocity(float x, float y) {
+    velocity.set(x, y);
   }
 
-  void setSpeed(float speed) {
-    this.speed = speed;
+  void adjustVelocity() {
+    if (isMoving(0)) {
+      velocity.set(velocity.x, -1);
+    }
+    if (isMoving(1)) {
+      velocity.set(-1, velocity.y);
+    }
+    if (isMoving(2)) {
+      velocity.set(velocity.x, 1);
+    }
+    if (isMoving(3)) {
+      velocity.set(1, velocity.y);
+    }
+    velocity.normalize();
   }
 
   void move() {
     location.add(velocity.x * speed, velocity.y * speed);
-  }
-
-  void setVelocity() {
-    if (isMoving(0)) {
-      //this.y = this.y - speed;
-      velocity.set(velocity.x, -1);
-    }
-    if (isMoving(1)) {
-      //this.x = this.x - speed;
-      velocity.set(-1, velocity.y);
-    }
-    if (isMoving(2)) {
-      ///this.y = this.y + speed;
-      velocity.set(velocity.x, 1);
-    }
-    if (isMoving(3)) {
-      //this.x = this.x + speed;
-      velocity.set(1, velocity.y);
-    }
   }
 
   void shoot() {
@@ -114,13 +84,10 @@ class Player {
         setDirectionModifier(1);
       } else if (isFacing(2) && isFacing(3)) {
         setDirectionModifier(3);
-        this.speed = diagonalSpeed;
       } else if (isFacing(2) && isFacing(1)) {
         setDirectionModifier(5);
-        this.speed = diagonalSpeed;
       } else if (isFacing(0) && isFacing(1)) {
         setDirectionModifier(7);
-        this.speed = diagonalSpeed;
       }
     } else {
       if (isFacing(0)) {
