@@ -25,8 +25,8 @@ class Gun {
     float bulletSpawnX;
     float bulletSpawnY;
     if (isFiring) {
-      bulletSpawnX = (float)(owner.x +  1.5 * Math.sin(owner.directionModifier * PI/4) * gLength);
-      bulletSpawnY = (float)(owner.y -  1.5 * Math.cos(owner.directionModifier * PI/4) * gLength);
+      bulletSpawnX = (float)(owner.location.x +  1.5 * Math.sin(owner.directionModifier * PI/4) * gLength);
+      bulletSpawnY = (float)(owner.location.y -  1.5 * Math.cos(owner.directionModifier * PI/4) * gLength);
       if (millis() - lastFiredTime >= reloadingTime) {
         bullets.add(new Bullet(bulletSpawnX, bulletSpawnY, owner.directionModifier, owner.rgb));
         lastFiredTime = millis();
@@ -36,8 +36,11 @@ class Gun {
 
   void manageBullets() {
     for (int i=0; i<bullets.size(); i++) {
+      /*
       bullets.get(i).move();
       bullets.get(i).display();
+      */
+      bullets.get(i).run();
 
       if (bullets.get(i).isOutOfMap() || !bullets.get(i).isActive) {
         bullets.remove(i);

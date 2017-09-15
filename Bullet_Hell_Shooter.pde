@@ -40,8 +40,8 @@ void handleBulletEnemyCollision() {
 }
 
 boolean isBulletCollidingWithEnemy(int i, int k) {
-  float distX = player.gun.bullets.get(i).x - enemies.get(k).x;
-  float distY = player.gun.bullets.get(i).y - enemies.get(k).y;
+  float distX = player.gun.bullets.get(i).location.x - enemies.get(k).location.x;
+  float distY = player.gun.bullets.get(i).location.y - enemies.get(k).location.y;
 
   if (getDistanceBetween(distX, distY) <= player.gun.bullets.get(i).radius + enemies.get(k).radius) {
     return true;
