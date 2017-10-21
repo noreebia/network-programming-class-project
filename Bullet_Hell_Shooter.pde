@@ -10,7 +10,7 @@ void setup() {
 }
 
 void initializeEnemies() {
-  for (int i=0; i< 100; i++) {
+  for (int i=0; i< 200; i++) {
     enemies.add(new Enemy(random(0, width), (random(0, height)) ));
     enemies.get(i).setTarget(player);
     enemies.get(i).setVelocity();
