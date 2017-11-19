@@ -31,6 +31,7 @@ public class InputHandler extends Thread{
 		while(!shouldStop()) {
 			try {
 				message = (Message) ois.readObject();
+				System.out.println("received message from server");
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {

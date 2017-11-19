@@ -19,6 +19,7 @@ public class Lobby extends javax.swing.JFrame {
 
 	Socket socket;
 	ObjectOutputStream oos;
+	InputHandler inputHandler;
     /**
      * Creates new form Lobby
      */
@@ -30,6 +31,8 @@ public class Lobby extends javax.swing.JFrame {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+        inputHandler = new InputHandler(socket, jTextArea1);
+        inputHandler.start();
     }
 
     /**

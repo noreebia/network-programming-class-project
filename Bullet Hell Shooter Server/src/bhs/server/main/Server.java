@@ -40,7 +40,7 @@ public class Server {
 				Client connectedClient = new Client(socket, userChosenNickname);
 				clients.add(connectedClient);
 				
-				ClientHandler clientHandler = new ClientHandler(connectedClient, clients);
+				ClientHandler clientHandler = new ClientHandler(connectedClient, clients, clientHandlingThreads);
 				clientHandler.start();
 				clientHandlingThreads.add(clientHandler);
 				
