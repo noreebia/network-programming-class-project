@@ -59,8 +59,8 @@ public class OutputHandlingThread implements Runnable {
 				}
 				System.out.println("Sent to:" + c.getAddress().toString());
 			}
-			System.out.println("Length of sent data in byte: " + buf.length);
-			System.out.println("number of explosions sent: " + dataController.getExplosions().size());
+			//System.out.println("Length of sent data in byte: " + buf.length);
+			//System.out.println("number of explosions sent: " + dataController.getExplosions().size());
 			if (dataController.getExplosions().size() > 0) {
 				dataController.clearExplosions();
 			}

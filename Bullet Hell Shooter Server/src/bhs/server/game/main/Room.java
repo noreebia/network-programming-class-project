@@ -44,19 +44,24 @@ public class Room {
 			e.printStackTrace();
 		}
 		
+		System.out.println(socket.getLocalPort());
+		
 		executor.execute(new InputHandlingThread(socket, dataController, enemySystem, clients));
 		ses.scheduleAtFixedRate(new OutputHandlingThread(socket, dataController, clients, enemySystem), 0, 8, TimeUnit.MILLISECONDS);
+		
 	}
 	
 	public short getConnectionCount() {
 		return connectionCount;
 	}
 	
+	/*
 	public void addClient(short id, InetAddress clientAddress, int clientPort) {
 		clients.add(new Client(id, clientAddress, clientPort));
 	}
+	*/
 	
 	public int getPort() {
-		return port;
+		return socket.getLocalPort();
 	}
 }

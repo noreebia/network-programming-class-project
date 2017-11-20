@@ -7,7 +7,9 @@ import java.net.*;
 
 public class Main {
 	public static void main(String[] args) throws IOException {
-		Server server = new Server();
+		/*Server server = new Server();
 		server.run();
+		*/
+		Room romm = new Room(50000);
 	}
 }

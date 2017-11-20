@@ -6,7 +6,7 @@ import model.*;
 public class DataController {
 	
 	private Data data = new Data();
-	private boolean newPlayer;
+	private boolean newPlayer = true;
 	
 	public DataController() {
 		setLevel(1);

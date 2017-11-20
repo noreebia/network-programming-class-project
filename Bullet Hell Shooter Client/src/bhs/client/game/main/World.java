@@ -9,6 +9,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -22,7 +23,7 @@ import processing.core.PApplet;
 public class World extends PApplet {
 	InetAddress serverAddress;
 	int serverPort;
-	
+
 	DatagramSocket socket;
 	DatagramPacket packet;
 
@@ -40,7 +41,7 @@ public class World extends PApplet {
 
 	DisplayHandler displayHandler;
 	PhysicsEngine physicsEngine;
-	
+
 	public World(int serverPort) {
 		System.out.println("initializing world");
 		try {
@@ -54,6 +55,7 @@ public class World extends PApplet {
 		}
 		packet = new DatagramPacket(buf, buf.length, serverAddress, serverPort);
 
+		/*
 		try {
 			socket.send(packet);
 		} catch (IOException e) {
@@ -70,28 +72,35 @@ public class World extends PApplet {
 			}
 
 			connectionID = byteArrayToShort(packet.getData());
+
 			player.setID((short) connectionID);
 			System.out.println("My ID: " + connectionID);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		*/
+		Random rand = new Random();
+		short randomShort = (short)rand.nextInt(100);
+		//player.setID((short)1);
+		player.setID(randomShort);
 	}
 
 	public void settings() {
 		size(1200, 800);
-		
+
 		/* can only do this after calling size() */
-		user.setXY(width/2, height/2);
+		user.setXY(width / 2, height / 2);
 		initializePlayer();
-		
+
 		/* starting executor threads */
 		executor.execute(new InputHandlingThread(socket, dataController, connectionID, user));
-		ses.scheduleAtFixedRate(new OutputHandlingThread(socket, serverAddress, 50001, player), 0, 8, TimeUnit.MILLISECONDS);
+		ses.scheduleAtFixedRate(new OutputHandlingThread(socket, serverAddress, 50000, player), 0, 8,
+				TimeUnit.MILLISECONDS);
 
 		displayHandler = new DisplayHandler(this, connectionID, dataController, user);
 		physicsEngine = new PhysicsEngine(dataController, user, player);
 	}
-	
+
 	public void initializePlayer() {
 		player.setX(user.getX());
 		player.setY(user.getY());
@@ -104,14 +113,14 @@ public class World extends PApplet {
 
 	public void draw() {
 		background(0);
-		
+
 		user.run();
 		user.writeInfoInto(player);
 
 		displayHandler.run();
 		physicsEngine.run();
 	}
-	
+
 	public short byteArrayToShort(byte[] b) {
 		ByteBuffer bb = ByteBuffer.wrap(b);
 		return bb.getShort();
@@ -131,7 +140,7 @@ public class World extends PApplet {
 			user.shouldFace(3, true);
 		}
 		if (key == 'w') {
-			
+
 			user.shouldMove(0, true);
 		}
 		if (key == 'a') {
