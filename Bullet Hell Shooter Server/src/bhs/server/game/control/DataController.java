@@ -1,15 +1,12 @@
 package bhs.server.game.control;
 import java.util.ArrayList;
 
-
-import java.util.LinkedList;
-import java.util.Queue;
-
-import bhs.server.game.model.*;
+import model.*;
 
 public class DataController {
 	
 	private Data data = new Data();
+	private boolean newPlayer;
 	
 	public DataController() {
 		setLevel(1);
@@ -23,12 +20,25 @@ public class DataController {
 		for(Player p: getPlayers()) {
 			if(p.getID() == player.getID()) {
 				p.cloneInfoOf(player);
+				setNewPlayer(false);
 				return;
 			}
 		}
 		addPlayer(player);
+		setNewPlayer(true);
 	}
 	
+	
+	/*
+	public boolean isExistingPlayer(int id) {
+		for(Player p: getPlayers()) {
+			if(p.getID() == id) {
+				return true;
+			}
+		}
+		return false;
+	}
+	*/
 	public void createNewEnemyArrayList() {
 		data.enemies = new ArrayList<GameObject>();
 	}
@@ -67,5 +77,13 @@ public class DataController {
 	
 	public short getLevel() {
 		return data.level;
+	}
+	
+	public void setNewPlayer(boolean newPlayer) {
+		this.newPlayer = newPlayer;
+	}
+	
+	public boolean isNewPlayer() {
+		return newPlayer;
 	}
 }

@@ -4,9 +4,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.*;
+import java.util.ArrayList;
 
 import bhs.server.game.control.*;
-import bhs.server.game.model.*;
+import model.Client;
+import model.Player;
 
 public class InputHandlingThread implements Runnable {
 
@@ -18,14 +20,17 @@ public class InputHandlingThread implements Runnable {
 
 	ByteArrayInputStream bais;
 	ObjectInputStream is;
+	
+	ArrayList<Client> clients;
 
 	EnemySystem enemySystem;
 
-	public InputHandlingThread(DatagramSocket ioSocket, DataController dataController, EnemySystem enemySystem) {
+	public InputHandlingThread(DatagramSocket ioSocket, DataController dataController, EnemySystem enemySystem, ArrayList<Client> clients) {
 		System.out.println("Input handler created.");
 		this.ioSocket = ioSocket;
 		this.dataController = dataController;
 		this.enemySystem = enemySystem;
+		this.clients = clients;
 	}
 
 	public void run() {
@@ -45,6 +50,11 @@ public class InputHandlingThread implements Runnable {
 				try {
 					temp = (Player) is.readObject();
 					dataController.updatePlayer(temp);
+					/*
+					if(dataController.isNewPlayer()) {
+						addClient(temp.getID(), packet.getAddress(), packet.getPort());
+					}
+					*/
 					System.out.println("received player object from client and data updated");
 					System.out.println("number of player bullets: " + temp.getBullets().size());
 
@@ -68,7 +78,12 @@ public class InputHandlingThread implements Runnable {
 				is.close();
 			} catch (Exception e) {
 				e.printStackTrace();
+				System.exit(1);
 			}
 		}
+	}
+	
+	public void addClient(short id, InetAddress clientAddress, int clientPort) {
+		clients.add(new Client(id, clientAddress, clientPort));
 	}
 }

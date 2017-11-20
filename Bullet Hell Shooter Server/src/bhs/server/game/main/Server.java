@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.concurrent.*;
 
 import bhs.server.game.control.*;
-import bhs.server.game.model.*;
+import model.Client;
 
 public class Server {
 	
@@ -57,7 +57,7 @@ public class Server {
 			e1.printStackTrace();
 		}
 		
-		executor.execute(new InputHandlingThread(ioSocket, dataController, enemySystem));
+		executor.execute(new InputHandlingThread(ioSocket, dataController, enemySystem, clients));
 		ses.scheduleAtFixedRate(new OutputHandlingThread(ioSocket, dataController, clients, enemySystem), 0, 8, TimeUnit.MILLISECONDS);
 	}
 

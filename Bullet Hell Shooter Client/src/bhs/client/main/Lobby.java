@@ -7,7 +7,9 @@ package bhs.client.main;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.net.DatagramSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
 import protocol.Message;
 
@@ -120,6 +122,11 @@ public class Lobby extends javax.swing.JFrame {
         jButton3.setForeground(new java.awt.Color(0, 255, 255));
         jButton3.setText("HOST GAME");
         jButton3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 255, 255), 3));
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton6.setBackground(new java.awt.Color(0, 0, 0));
         jButton6.setForeground(new java.awt.Color(0, 255, 255));
@@ -618,6 +625,10 @@ public class Lobby extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>                        
+    
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {  
+
+    }                                        
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         // TODO add your handling code here:

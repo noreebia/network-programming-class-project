@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 import bhs.server.game.control.DataController;
 import bhs.server.game.control.EnemySystem;
-import bhs.server.game.model.Client;
+import model.Client;
 
 public class Room {
 	DatagramSocket socket;
@@ -44,13 +44,18 @@ public class Room {
 			e.printStackTrace();
 		}
 		
-		executor.execute(new InputHandlingThread(socket, dataController, enemySystem));
+		executor.execute(new InputHandlingThread(socket, dataController, enemySystem, clients));
 		ses.scheduleAtFixedRate(new OutputHandlingThread(socket, dataController, clients, enemySystem), 0, 8, TimeUnit.MILLISECONDS);
+	}
+	
+	public short getConnectionCount() {
+		return connectionCount;
 	}
 	
 	public void addClient(short id, InetAddress clientAddress, int clientPort) {
 		clients.add(new Client(id, clientAddress, clientPort));
 	}
+	
 	public int getPort() {
 		return port;
 	}

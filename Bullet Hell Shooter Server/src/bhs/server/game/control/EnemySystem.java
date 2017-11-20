@@ -4,7 +4,9 @@ import java.util.ArrayList;
 
 import java.util.Random;
 
-import bhs.server.game.model.*;
+import model.Enemy;
+import model.GameObject;
+
 
 public class EnemySystem {
 	DataController dataController;

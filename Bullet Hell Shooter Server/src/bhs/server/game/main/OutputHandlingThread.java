@@ -7,7 +7,7 @@ import java.net.*;
 import java.util.ArrayList;
 
 import bhs.server.game.control.*;
-import bhs.server.game.model.*;
+import model.Client;
 
 public class OutputHandlingThread implements Runnable {
 
