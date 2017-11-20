@@ -9,22 +9,25 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 
+import bhs.server.game.main.Room;
 import protocol.Message;
 
 public class ClientHandler extends Thread {
 	Client client;
 	ArrayList<Client> clientList;
 	ArrayList<ClientHandler> clientHandlingThreads;
+	ArrayList<Room> rooms;
 	BufferedReader input;
 	PrintWriter output;
 
 	ObjectOutputStream oos;
 	ObjectInputStream ois;
 
-	public ClientHandler(Client client, ArrayList<Client> clientList, ArrayList<ClientHandler> clientHandlingThreads) {
+	public ClientHandler(Client client, ArrayList<Client> clientList, ArrayList<ClientHandler> clientHandlingThreads, ArrayList<Room> rooms) {
 		this.client = client;
 		this.clientList = clientList;
 		this.clientHandlingThreads = clientHandlingThreads;
+		this.rooms = rooms;
 		try {
 			// input = new BufferedReader(new
 			// InputStreamReader(client.getSocket().getInputStream()));
@@ -72,6 +75,18 @@ public class ClientHandler extends Thread {
 				String chatMessage = (String) message.getData();
 				System.out.println(chatMessage);
 				sendToAllClients(client.getNickname() + ":" + chatMessage+"\n");
+				break;
+			case "create game":
+				Room newRoom = new Room();
+				int newRoomPort = newRoom.getPort();
+				rooms.add(newRoom);
+				String response = "create game response";
+				message = new Message(response, newRoomPort);
+				try {
+					oos.writeObject(message);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 				break;
 			}
 		}

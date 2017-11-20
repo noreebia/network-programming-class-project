@@ -94,7 +94,7 @@ public class World extends PApplet {
 
 		/* starting executor threads */
 		executor.execute(new InputHandlingThread(socket, dataController, connectionID, user));
-		ses.scheduleAtFixedRate(new OutputHandlingThread(socket, serverAddress, 50000, player), 0, 8,
+		ses.scheduleAtFixedRate(new OutputHandlingThread(socket, serverAddress, serverPort, player), 0, 8,
 				TimeUnit.MILLISECONDS);
 
 		displayHandler = new DisplayHandler(this, connectionID, dataController, user);

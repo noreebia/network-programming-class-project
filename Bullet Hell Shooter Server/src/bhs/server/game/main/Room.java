@@ -34,6 +34,21 @@ public class Room {
 	ExecutorService executor = Executors.newCachedThreadPool();
 	ScheduledExecutorService ses = Executors.newScheduledThreadPool(3);
 	
+	public Room() {
+		enemySystem.resetEnemies(10);
+
+		try {
+			socket = new DatagramSocket();
+		} catch (SocketException e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println(socket.getLocalPort());
+		
+		executor.execute(new InputHandlingThread(socket, dataController, enemySystem, clients));
+		ses.scheduleAtFixedRate(new OutputHandlingThread(socket, dataController, clients, enemySystem), 0, 8, TimeUnit.MILLISECONDS);
+	}
+	
 	public Room(int port) {
 		enemySystem.resetEnemies(10);
 
@@ -48,7 +63,6 @@ public class Room {
 		
 		executor.execute(new InputHandlingThread(socket, dataController, enemySystem, clients));
 		ses.scheduleAtFixedRate(new OutputHandlingThread(socket, dataController, clients, enemySystem), 0, 8, TimeUnit.MILLISECONDS);
-		
 	}
 	
 	public short getConnectionCount() {

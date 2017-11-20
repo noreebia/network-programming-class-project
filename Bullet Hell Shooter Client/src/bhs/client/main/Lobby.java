@@ -626,8 +626,14 @@ public class Lobby extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>                        
     
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {  
-
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {
+    	System.out.println("clicked host game button");
+    	Message message = new Message("create game", null);
+    	try {
+			oos.writeObject(message);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }                                        
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {                                         

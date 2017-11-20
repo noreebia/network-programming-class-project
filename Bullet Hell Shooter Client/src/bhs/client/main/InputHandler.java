@@ -6,6 +6,8 @@ import java.net.Socket;
 
 import javax.swing.JTextArea;
 
+import bhs.client.game.main.World;
+import processing.core.PApplet;
 import protocol.Message;
 
 public class InputHandler extends Thread{
@@ -43,6 +45,13 @@ public class InputHandler extends Thread{
 			case "chatboxUpdate":
 				String messageData = (String) message.getData();
 				chatbox.append(messageData);
+				break;
+			case "create game response":
+				System.out.println("received response to 'host game' button click");
+				int roomPort = (int) message.getData();
+				String[] sketchArgs = {"Game"};
+				World world = new World(roomPort);
+				PApplet.runSketch(sketchArgs, world);
 				break;
 			}
 		}
