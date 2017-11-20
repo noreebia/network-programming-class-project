@@ -87,11 +87,31 @@ public class ClientHandler extends Thread {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				ArrayList<String> listOfRooms= new ArrayList<String>();
+				for(Room r:rooms) {
+					listOfRooms.add("room");
+				}
+				message = new Message("room list update", listOfRooms);
+				sendToAll(message);
 				break;
 			}
 		}
 		System.out.println("client has disconnected. terminating");
 		return;
+	}
+	
+	public void sendMessage(Message message) {
+		try {
+			oos.writeObject(message);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void sendToAll(Message message) {
+		for(ClientHandler ch: clientHandlingThreads) {
+			ch.sendMessage(message);
+		}
 	}
 
 	public void sendMessage(String chatMessage) {

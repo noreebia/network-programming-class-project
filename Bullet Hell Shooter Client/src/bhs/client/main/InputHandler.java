@@ -3,7 +3,10 @@ package bhs.client.main;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
 import javax.swing.JTextArea;
 
 import bhs.client.game.main.World;
@@ -16,10 +19,12 @@ public class InputHandler extends Thread{
 	ObjectInputStream ois;
 	boolean stop = false;
 	JTextArea chatbox;
+	JList roomListBox;
 	
-	public InputHandler(Socket socket, JTextArea chatbox) {
+	public InputHandler(Socket socket, JTextArea chatbox, JList roomListBox) {
 		this.socket = socket;
 		this.chatbox = chatbox;
+		this.roomListBox = roomListBox;
 		try {
 			ois = new ObjectInputStream(socket.getInputStream());
 		} catch (IOException e) {
@@ -53,6 +58,13 @@ public class InputHandler extends Thread{
 				World world = new World(roomPort);
 				PApplet.runSketch(sketchArgs, world);
 				break;
+			case "room list update":
+				ArrayList<String> roomList = (ArrayList<String>) message.getData();
+				DefaultListModel<String> listModel = new DefaultListModel<>();
+				for(String roomInfo: roomList) {
+					listModel.addElement(roomInfo);
+				}
+				roomListBox.setModel(listModel);
 			}
 		}
 		return;

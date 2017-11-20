@@ -33,7 +33,7 @@ public class Lobby extends javax.swing.JFrame {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-        inputHandler = new InputHandler(socket, jTextArea1);
+        inputHandler = new InputHandler(socket, jTextArea1, jList1);
         inputHandler.start();
     }
 
