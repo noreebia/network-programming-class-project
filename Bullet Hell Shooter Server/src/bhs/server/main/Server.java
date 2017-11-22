@@ -4,21 +4,25 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import bhs.server.game.main.Room;
 
 public class Server {
+	CopyOnWriteArrayList<Client> clients = new CopyOnWriteArrayList<Client>();
+	CopyOnWriteArrayList<Room> rooms = new CopyOnWriteArrayList<Room>();
 
-	ArrayList<Client> clients = new ArrayList<Client>();
-	ArrayList<Room> rooms = new ArrayList<Room>();
-
-	ArrayList<ClientHandler> clientHandlingThreads = new ArrayList<ClientHandler>();
+	CopyOnWriteArrayList<ClientHandler> clientHandlingThreads = new CopyOnWriteArrayList<ClientHandler>();
 	ServerSocket serverSocket;
 
 	BufferedReader input;
 	PrintWriter output;
+	
+	AtomicInteger uniqueRoomID = new AtomicInteger();
 
 	public Server() throws IOException {
+		uniqueRoomID.set(1);
 		serverSocket = new ServerSocket(50000);
 
 		String userChosenNickname;
@@ -40,7 +44,7 @@ public class Server {
 				Client connectedClient = new Client(socket, userChosenNickname);
 				clients.add(connectedClient);
 				
-				ClientHandler clientHandler = new ClientHandler(connectedClient, clients, clientHandlingThreads, rooms);
+				ClientHandler clientHandler = new ClientHandler(connectedClient, clients, clientHandlingThreads, rooms, uniqueRoomID);
 				clientHandler.start();
 				clientHandlingThreads.add(clientHandler);
 				

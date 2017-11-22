@@ -8,26 +8,30 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import bhs.server.game.main.Room;
 import protocol.Message;
 
 public class ClientHandler extends Thread {
 	Client client;
-	ArrayList<Client> clientList;
-	ArrayList<ClientHandler> clientHandlingThreads;
-	ArrayList<Room> rooms;
+	CopyOnWriteArrayList<Client> clientList;
+	CopyOnWriteArrayList<ClientHandler> clientHandlingThreads;
+	CopyOnWriteArrayList<Room> rooms;
+	AtomicInteger uniqueRoomID;
 	BufferedReader input;
 	PrintWriter output;
 
 	ObjectOutputStream oos;
 	ObjectInputStream ois;
 
-	public ClientHandler(Client client, ArrayList<Client> clientList, ArrayList<ClientHandler> clientHandlingThreads, ArrayList<Room> rooms) {
+	public ClientHandler(Client client, CopyOnWriteArrayList<Client> clientList, CopyOnWriteArrayList<ClientHandler> clientHandlingThreads, CopyOnWriteArrayList<Room> rooms, AtomicInteger uniqueRoomID) {
 		this.client = client;
 		this.clientList = clientList;
 		this.clientHandlingThreads = clientHandlingThreads;
 		this.rooms = rooms;
+		this.uniqueRoomID = uniqueRoomID;
 		try {
 			// input = new BufferedReader(new
 			// InputStreamReader(client.getSocket().getInputStream()));
@@ -81,7 +85,8 @@ public class ClientHandler extends Thread {
 				//sendToAllClients(client.getNickname() + ":" + chatMessage+"\n");
 				break;
 			case "create game":
-				Room newRoom = new Room();
+				int roomID = uniqueRoomID.getAndIncrement();
+				Room newRoom = new Room(roomID);
 				int newRoomPort = newRoom.getPort();
 				rooms.add(newRoom);
 				String response = "create game response";
@@ -93,7 +98,7 @@ public class ClientHandler extends Thread {
 				}
 				ArrayList<String> listOfRooms= new ArrayList<String>();
 				for(Room r:rooms) {
-					listOfRooms.add("room");
+					listOfRooms.add("Room " + r.getID());
 				}
 				outgoingMessage = new Message("room list update", listOfRooms);
 				sendToAllClients(outgoingMessage);
@@ -117,7 +122,7 @@ public class ClientHandler extends Thread {
 			ch.sendMessage(message);
 		}
 	}
-
+	/*
 	public void sendMessage(String chatMessage) {
 		Message message = new Message("chatboxUpdate", chatMessage);
 		try {
@@ -136,7 +141,7 @@ public class ClientHandler extends Thread {
 			e.printStackTrace();
 		}
 	}
-
+	*/
 	/*
 	 * public void sendToAllClients(String chatMessage) { Socket tempSocket;
 	 * ObjectOutputStream tempOos = null; Message message = new
