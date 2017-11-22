@@ -29,6 +29,8 @@ public class Room {
 	ArrayList<Client> clients = new ArrayList<Client>();
 	
 	short connectionCount=0;
+	
+	int id;
 	int port;
 	
 	ExecutorService executor = Executors.newCachedThreadPool();
@@ -77,5 +79,9 @@ public class Room {
 	
 	public int getPort() {
 		return socket.getLocalPort();
+	}
+	
+	public int getID() {
+		return id;
 	}
 }

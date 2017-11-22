@@ -42,13 +42,14 @@ public class ClientHandler extends Thread {
 	}
 
 	public void run() {
-		Message message = null;
-		String messageContents;
+		Message incomingMessage = null;
+		Message outgoingMessage = null;
+		String request;
 		while (true) {
 			System.out.println("listening for client input...");
 			// message = input.readLine();
 			try {
-				message = (Message) ois.readObject();
+				incomingMessage = (Message) ois.readObject();
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 				disconnectClient();
@@ -61,29 +62,32 @@ public class ClientHandler extends Thread {
 				e.printStackTrace();
 				System.exit(1);
 			}
-			if (message == null) {
+			if (incomingMessage == null) {
 				disconnectClient();
 				break;
 			}
 
-			messageContents = message.getContents();
+			request = incomingMessage.getContents();
 
 			System.out.println("From client: " + client.getNickname());
-			System.out.println("Message contents: " + messageContents);
-			switch (messageContents) {
+			System.out.println("Message contents: " + request);
+			switch (request) {
 			case "chat":
-				String chatMessage = (String) message.getData();
-				System.out.println(chatMessage);
-				sendToAllClients(client.getNickname() + ":" + chatMessage+"\n");
+				String receivedMessage = (String) incomingMessage.getData();
+				String modifiedMessage = client.getNickname() + ": " + receivedMessage + "\n";
+				System.out.println(modifiedMessage);
+				outgoingMessage = new Message("chatboxUpdate", modifiedMessage);
+				sendToAllClients(outgoingMessage);
+				//sendToAllClients(client.getNickname() + ":" + chatMessage+"\n");
 				break;
 			case "create game":
 				Room newRoom = new Room();
 				int newRoomPort = newRoom.getPort();
 				rooms.add(newRoom);
 				String response = "create game response";
-				message = new Message(response, newRoomPort);
+				outgoingMessage = new Message(response, newRoomPort);
 				try {
-					oos.writeObject(message);
+					oos.writeObject(outgoingMessage);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -91,8 +95,8 @@ public class ClientHandler extends Thread {
 				for(Room r:rooms) {
 					listOfRooms.add("room");
 				}
-				message = new Message("room list update", listOfRooms);
-				sendToAll(message);
+				outgoingMessage = new Message("room list update", listOfRooms);
+				sendToAllClients(outgoingMessage);
 				break;
 			}
 		}
@@ -108,7 +112,7 @@ public class ClientHandler extends Thread {
 		}
 	}
 	
-	public void sendToAll(Message message) {
+	public void sendToAllClients(Message message) {
 		for(ClientHandler ch: clientHandlingThreads) {
 			ch.sendMessage(message);
 		}
