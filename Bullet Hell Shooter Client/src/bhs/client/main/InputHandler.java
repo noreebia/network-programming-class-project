@@ -33,8 +33,10 @@ public class InputHandler extends Thread{
 	}
 	
 	public void run() {
+		World world;
 		String messageContents;
 		Message message = null;
+		String[] sketchArgs = {"Game"};
 		while(!shouldStop()) {
 			try {
 				message = (Message) ois.readObject();
@@ -54,8 +56,7 @@ public class InputHandler extends Thread{
 			case "create game response":
 				System.out.println("received response to 'host game' button click");
 				int roomPort = (int) message.getData();
-				String[] sketchArgs = {"Game"};
-				World world = new World(roomPort);
+				world = new World(roomPort, 0);
 				PApplet.runSketch(sketchArgs, world);
 				break;
 			case "room list update":
@@ -65,6 +66,12 @@ public class InputHandler extends Thread{
 					listModel.addElement(roomInfo);
 				}
 				roomListBox.setModel(listModel);
+				break;
+			case "join game response":
+				int[] roomInfo = (int[]) message.getData();
+				world = new World(roomInfo[0], roomInfo[1]);
+				PApplet.runSketch(sketchArgs, world);
+				break;
 			}
 		}
 		return;

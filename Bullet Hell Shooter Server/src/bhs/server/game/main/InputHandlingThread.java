@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import bhs.server.game.control.*;
 import model.Client;
@@ -21,12 +22,11 @@ public class InputHandlingThread implements Runnable {
 	ByteArrayInputStream bais;
 	ObjectInputStream is;
 
-	ArrayList<Client> clients;
+	CopyOnWriteArrayList<Client> clients;
 
 	EnemySystem enemySystem;
 
-	public InputHandlingThread(DatagramSocket ioSocket, DataController dataController, EnemySystem enemySystem,
-			ArrayList<Client> clients) {
+	public InputHandlingThread(DatagramSocket ioSocket, DataController dataController, EnemySystem enemySystem, CopyOnWriteArrayList<Client> clients) {
 		System.out.println("Input handler created.");
 		this.ioSocket = ioSocket;
 		this.dataController = dataController;
@@ -53,8 +53,15 @@ public class InputHandlingThread implements Runnable {
 					dataController.updatePlayer(temp);
 
 					if (dataController.isNewPlayer()) {
-						addClient(temp.getID(), packet.getAddress(), packet.getPort());
+						addClient(temp.getID(), packet.getAddress(), packet.getPort(), System.currentTimeMillis());
 						System.out.println("new player! new player's id: " + temp.getID());
+					}else {
+						for(Client c: clients) {
+							if(c.getID() == temp.getID()) {
+								c.setLastSentTime(System.currentTimeMillis());
+								break;
+							}
+						}
 					}
 
 					System.out.println("received player object from client and data updated");
@@ -84,7 +91,7 @@ public class InputHandlingThread implements Runnable {
 		}
 	}
 
-	public void addClient(short id, InetAddress clientAddress, int clientPort) {
-		clients.add(new Client(id, clientAddress, clientPort));
+	public void addClient(short id, InetAddress clientAddress, int clientPort, long lastSentTime) {
+		clients.add(new Client(id, clientAddress, clientPort, lastSentTime));
 	}
 }

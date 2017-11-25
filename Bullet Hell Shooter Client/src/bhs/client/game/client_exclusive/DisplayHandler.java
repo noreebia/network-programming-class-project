@@ -93,11 +93,9 @@ public class DisplayHandler {
 				world.ellipse(p.getX(), p.getY(), 5, 5);
 			}
 			// System.out.println("Num of player bullets: " + p.getBullets().size());
-			/*
 			for (Bullet b : p.getBullets()) {
 				drawBullet(b);
 			}
-			*/
 		}
 	}
 
@@ -106,8 +104,18 @@ public class DisplayHandler {
 		world.translate(player.getX(), player.getY());
 		world.rotate(world.PI / 4 * player.getDirection());
 		setStrokeAndFillOf(player);
+		/*
 		world.ellipse(0, 0, player.size * 2, player.size * 2);
 		world.rect(-2, -player.size, 4, -9);
+		*/
+		world.beginShape();
+		world.vertex(0, -user.getSize()- 5);
+		world.vertex(-user.getSize(), 5);
+		world.vertex(0, 15);
+		world.vertex(user.getSize(), 5);
+		world.endShape(world.CLOSE);
+
+		
 		world.popMatrix();
 	}
 

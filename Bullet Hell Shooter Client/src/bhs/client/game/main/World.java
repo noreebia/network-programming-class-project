@@ -42,7 +42,7 @@ public class World extends PApplet {
 	DisplayHandler displayHandler;
 	PhysicsEngine physicsEngine;
 
-	public World(int serverPort) {
+	public World(int serverPort, int playerID) {
 		System.out.println("initializing world");
 		try {
 			serverAddress = InetAddress.getByName("localhost");
@@ -79,10 +79,11 @@ public class World extends PApplet {
 			e.printStackTrace();
 		}
 		*/
-		Random rand = new Random();
-		short randomShort = (short)rand.nextInt(100);
+		//Random rand = new Random();
+		//short randomShort = (short)rand.nextInt(100);
 		//player.setID((short)1);
-		player.setID(randomShort);
+		player.setID((short)playerID);
+		connectionID = (short) playerID;
 	}
 
 	public void settings() {

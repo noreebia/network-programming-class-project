@@ -11,10 +11,12 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import bhs.server.game.control.DataController;
 import bhs.server.game.control.EnemySystem;
@@ -26,7 +28,8 @@ public class Room {
 	DataController dataController = new DataController();
 	EnemySystem enemySystem = new EnemySystem(dataController);
 	
-	ArrayList<Client> clients = new ArrayList<Client>();
+	CopyOnWriteArrayList<Client> clients = new CopyOnWriteArrayList<Client>();
+	
 	
 	short connectionCount=0;
 	
@@ -35,6 +38,8 @@ public class Room {
 	
 	ExecutorService executor = Executors.newCachedThreadPool();
 	ScheduledExecutorService ses = Executors.newScheduledThreadPool(3);
+	
+	AtomicInteger uniquePlayerID = new AtomicInteger(1);
 	
 	public Room(int id) {
 		this.id = id;
@@ -100,5 +105,9 @@ public class Room {
 	
 	public int getID() {
 		return id;
+	}
+	
+	public int getUniquePlayerID() {
+		return uniquePlayerID.getAndIncrement();
 	}
 }

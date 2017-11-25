@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import bhs.server.game.control.*;
 import model.Client;
@@ -19,11 +20,11 @@ public class OutputHandlingThread implements Runnable {
 	DatagramPacket packet;
 
 	DataController dataController;
-	ArrayList<Client> clients;
+	CopyOnWriteArrayList<Client> clients;
 
 	EnemySystem enemySystem;
 
-	public OutputHandlingThread(DatagramSocket ioSocket, DataController dataController, ArrayList<Client> clients, EnemySystem enemySystem) {
+	public OutputHandlingThread(DatagramSocket ioSocket, DataController dataController, CopyOnWriteArrayList<Client> clients, EnemySystem enemySystem) {
 		System.out.println("OutputHandlingThread created");
 		this.ioSocket = ioSocket;
 		try {
@@ -49,16 +50,36 @@ public class OutputHandlingThread implements Runnable {
 				e.printStackTrace();
 			}
 			buf = baos.toByteArray();
-
-			for (Client c : clients) {
-				packet = new DatagramPacket(buf, buf.length, c.getAddress(), c.getPort());
-				try {
-					ioSocket.send(packet);
-				} catch (IOException e) {
-					e.printStackTrace();
+			
+			/*
+			int i;
+			for(i=0; i< clients.size(); i++) {
+				if(System.currentTimeMillis() - clients.get(i).getLastSentTime() <= 2000) {
+					packet = new DatagramPacket(buf, buf.length, clients.get(i).getAddress(), clients.get(i).getPort());
+					try {
+						ioSocket.send(packet);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					System.out.println("Sent to:" + clients.get(i).getAddress().toString());
 				}
-				System.out.println("Sent to:" + c.getAddress().toString());
 			}
+			*/
+			
+			for (Client c : clients) {
+				if(System.currentTimeMillis() - c.getLastSentTime() <= 2000) {
+					packet = new DatagramPacket(buf, buf.length, c.getAddress(), c.getPort());
+					try {
+						ioSocket.send(packet);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					System.out.println("Sent to:" + c.getAddress().toString());
+				}else {
+					clients.remove(c);
+				}
+			}
+			
 			//System.out.println("Length of sent data in byte: " + buf.length);
 			//System.out.println("number of explosions sent: " + dataController.getExplosions().size());
 			if (dataController.getExplosions().size() > 0) {

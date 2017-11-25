@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 public class PanelWithDrawing extends JPanel{
 
 	BasicStroke stroke = new BasicStroke(2.0f);
-	Color color = new Color(0,255,255);
+	Color color = new Color(255,255,255);
 	
 	public PanelWithDrawing() {
 		System.out.println("panel with drawing created");

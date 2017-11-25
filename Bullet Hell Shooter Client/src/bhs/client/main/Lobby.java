@@ -27,6 +27,7 @@ public class Lobby extends javax.swing.JFrame {
      */
     public Lobby(Socket socket) {
         initComponents();
+        jRadioButton7.setSelected(true);
         this.socket = socket;
         try {
 			oos = new ObjectOutputStream(socket.getOutputStream());
@@ -159,6 +160,12 @@ public class Lobby extends javax.swing.JFrame {
         jTextArea1.setRows(5);
         jTextArea1.setEnabled(false);
         jScrollPane1.setViewportView(jTextArea1);
+        
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
 
         jButton4.setBackground(new java.awt.Color(0, 0, 0));
         jButton4.setForeground(new java.awt.Color(0, 255, 255));
@@ -637,7 +644,17 @@ public class Lobby extends javax.swing.JFrame {
     }                                        
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        // TODO add your handling code here:
+    	System.out.println(jList1.getSelectedValue());
+    	String selectedValue = jList1.getSelectedValue();
+    	String roomIDString = selectedValue.substring(5, selectedValue.length()).trim();
+    	System.out.println(roomIDString);
+    	int roomID = Integer.parseInt(roomIDString);
+    	Message message = new Message("join game", roomID);
+    	try {
+			oos.writeObject(message);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }                                        
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {                                         
@@ -698,6 +715,10 @@ public class Lobby extends javax.swing.JFrame {
 		}
     	jTextField1.setText("");
     }
+    
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {                                            
+    	jButton4.doClick();
+    }       
 
     /**
      * @param args the command line arguments

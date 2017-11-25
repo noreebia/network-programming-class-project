@@ -49,6 +49,7 @@ public class ClientHandler extends Thread {
 		Message incomingMessage = null;
 		Message outgoingMessage = null;
 		String request;
+		String messageData;
 		while (true) {
 			System.out.println("listening for client input...");
 			// message = input.readLine();
@@ -77,20 +78,19 @@ public class ClientHandler extends Thread {
 			System.out.println("Message contents: " + request);
 			switch (request) {
 			case "chat":
-				String receivedMessage = (String) incomingMessage.getData();
-				String modifiedMessage = client.getNickname() + ": " + receivedMessage + "\n";
+				messageData = (String) incomingMessage.getData();
+				String modifiedMessage = client.getNickname() + ": " + messageData + "\n";
 				System.out.println(modifiedMessage);
 				outgoingMessage = new Message("chatboxUpdate", modifiedMessage);
 				sendToAllClients(outgoingMessage);
 				//sendToAllClients(client.getNickname() + ":" + chatMessage+"\n");
 				break;
 			case "create game":
-				int roomID = uniqueRoomID.getAndIncrement();
-				Room newRoom = new Room(roomID);
+				int newRoomID = uniqueRoomID.getAndIncrement();
+				Room newRoom = new Room(newRoomID);
 				int newRoomPort = newRoom.getPort();
 				rooms.add(newRoom);
-				String response = "create game response";
-				outgoingMessage = new Message(response, newRoomPort);
+				outgoingMessage = new Message("create game response", newRoomPort);
 				try {
 					oos.writeObject(outgoingMessage);
 				} catch (IOException e) {
@@ -102,6 +102,17 @@ public class ClientHandler extends Thread {
 				}
 				outgoingMessage = new Message("room list update", listOfRooms);
 				sendToAllClients(outgoingMessage);
+				break;
+			case "join game":
+				int roomID = (int) incomingMessage.getData();
+				for(Room r:rooms) {
+					if(r.getID() == roomID) {
+						int[] roomInfo = {r.getPort(), r.getUniquePlayerID()};
+						outgoingMessage = new Message("join game response", roomInfo);
+						sendMessage(outgoingMessage);
+						break;
+					}
+				}
 				break;
 			}
 		}
@@ -154,5 +165,9 @@ public class ClientHandler extends Thread {
 
 	public void disconnectClient() {
 		clientList.remove(client);
+	}
+	
+	public void terminate() {
+		clientHandlingThreads.remove(this);
 	}
 }
