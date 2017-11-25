@@ -76,6 +76,7 @@ public class OutputHandlingThread implements Runnable {
 					}
 					System.out.println("Sent to:" + c.getAddress().toString());
 				}else {
+					dataController.removePlayer((short) c.getID());
 					clients.remove(c);
 				}
 			}

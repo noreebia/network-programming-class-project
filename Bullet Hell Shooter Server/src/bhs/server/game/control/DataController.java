@@ -1,5 +1,6 @@
 package bhs.server.game.control;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import model.*;
 
@@ -28,17 +29,23 @@ public class DataController {
 		setNewPlayer(true);
 	}
 	
-	
-	/*
-	public boolean isExistingPlayer(int id) {
+	public void removePlayer(short playerID) {
+		/*
 		for(Player p: getPlayers()) {
-			if(p.getID() == id) {
-				return true;
+			if(p.getID() == playerID) {
+				getPlayers().remove(p);
 			}
 		}
-		return false;
+		*/
+		Iterator<Player> iterator = getPlayers().iterator();
+		while(iterator.hasNext()) {
+			Player player = iterator.next();
+			if(player.getID() == playerID) {
+				iterator.remove();
+			}
+		}
 	}
-	*/
+	
 	public void createNewEnemyArrayList() {
 		data.enemies = new ArrayList<GameObject>();
 	}
