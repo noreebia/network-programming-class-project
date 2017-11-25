@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 import bhs.client.game.client_exclusive.*;
 import bhs.client.game.control.DataController;
-import model.*;
+import game.protocol.*;
 import processing.core.PApplet;
 
 public class World extends PApplet {
@@ -38,7 +38,7 @@ public class World extends PApplet {
 
 	DisplayHandler displayHandler;
 	PhysicsEngine physicsEngine;
-	
+
 	Player player = new Player();
 	PlayerController playerController = new PlayerController(this, player);
 
@@ -55,39 +55,8 @@ public class World extends PApplet {
 		}
 		packet = new DatagramPacket(buf, buf.length, serverAddress, serverPort);
 
-		/*
-		try {
-			socket.send(packet);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		try {
-			System.out.println("Sent packet to server");
-
-			packet = new DatagramPacket(buf, buf.length);
-			try {
-				socket.receive(packet);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			connectionID = byteArrayToShort(packet.getData());
-
-			player.setID((short) connectionID);
-			System.out.println("My ID: " + connectionID);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		*/
-		//Random rand = new Random();
-		//short randomShort = (short)rand.nextInt(100);
-		//player.setID((short)1);
-		try {
-			player.setID((short)playerID);
-			connectionID = (short) playerID;
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
+		player.setID((short) playerID);
+		connectionID = (short) playerID;
 	}
 
 	public void settings() {
@@ -105,7 +74,6 @@ public class World extends PApplet {
 		physicsEngine = new PhysicsEngine(dataController, player, playerController);
 	}
 
-
 	public void setup() {
 		strokeWeight((float) 1.5);
 		stroke(255);
@@ -113,7 +81,7 @@ public class World extends PApplet {
 
 	public void draw() {
 		background(0);
-		
+
 		playerController.run();
 
 		displayHandler.run();

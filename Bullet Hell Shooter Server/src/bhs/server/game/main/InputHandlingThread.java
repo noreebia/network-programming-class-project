@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import bhs.server.game.control.*;
-import model.Client;
-import model.Player;
+import game.protocol.Client;
+import game.protocol.Player;
 
 public class InputHandlingThread implements Runnable {
 

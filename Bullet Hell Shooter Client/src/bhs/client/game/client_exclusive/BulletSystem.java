@@ -2,8 +2,8 @@ package bhs.client.game.client_exclusive;
 
 import java.util.ArrayList;
 
-import model.Bullet;
-import model.Player;
+import game.protocol.Bullet;
+import game.protocol.Player;
 import processing.core.PApplet;
 
 public class BulletSystem {

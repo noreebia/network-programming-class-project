@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import java.util.Random;
 
-import model.Enemy;
-import model.GameObject;
+import game.protocol.Enemy;
+import game.protocol.GameObject;
 
 
 public class EnemySystem {

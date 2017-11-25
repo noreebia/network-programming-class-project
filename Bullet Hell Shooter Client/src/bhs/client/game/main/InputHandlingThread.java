@@ -8,8 +8,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
 import bhs.client.game.control.DataController;
-import model.Data;
-import model.Player;
+import game.protocol.Data;
+import game.protocol.Player;
 
 public class InputHandlingThread implements Runnable {
 

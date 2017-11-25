@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import bhs.server.game.control.*;
-import model.Client;
+import game.protocol.Client;
 
 public class OutputHandlingThread implements Runnable {
 

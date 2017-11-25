@@ -1,7 +1,7 @@
 package bhs.client.game.control;
 import java.util.ArrayList;
 
-import model.*;
+import game.protocol.*;
 
 
 public class DataController {

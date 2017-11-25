@@ -1,9 +1,9 @@
 package bhs.client.game.client_exclusive;
 
 import bhs.client.game.control.DataController;
-import model.Bullet;
-import model.GameObject;
-import model.Player;
+import game.protocol.Bullet;
+import game.protocol.GameObject;
+import game.protocol.Player;
 import processing.core.PApplet;
 
 public class DisplayHandler {

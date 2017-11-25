@@ -2,7 +2,7 @@ package bhs.server.game.control;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import model.*;
+import game.protocol.*;
 
 public class DataController {
 	

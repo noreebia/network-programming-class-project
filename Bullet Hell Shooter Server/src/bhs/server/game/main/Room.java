@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import bhs.server.game.control.DataController;
 import bhs.server.game.control.EnemySystem;
-import model.Client;
+import game.protocol.Client;
 
 public class Room {
 	DatagramSocket socket;

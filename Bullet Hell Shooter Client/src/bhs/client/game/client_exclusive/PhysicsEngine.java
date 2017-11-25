@@ -1,7 +1,7 @@
 package bhs.client.game.client_exclusive;
 
 import bhs.client.game.control.DataController;
-import model.*;
+import game.protocol.*;
 
 public class PhysicsEngine {
 	
