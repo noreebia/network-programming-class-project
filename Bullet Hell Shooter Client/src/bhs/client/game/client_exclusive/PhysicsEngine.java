@@ -1,17 +1,17 @@
 package bhs.client.game.client_exclusive;
 
-import bhs.client.game.control.*;
+import bhs.client.game.control.DataController;
 import model.*;
 
 public class PhysicsEngine {
 	
 	DataController dataController;
-	User user;
+	PlayerController playerController;
 	Player player;
 	
-	public PhysicsEngine(DataController dataController, User user, Player player) {
+	public PhysicsEngine(DataController dataController, Player player, PlayerController playerController) {
 		this.dataController = dataController;
-		this.user = user;
+		this.playerController = playerController;
 		this.player = player;
 	}
 	
@@ -21,10 +21,10 @@ public class PhysicsEngine {
 	}
 	
 	public void handlePlayerEnemyCollision() {
-		if(!user.isInvincible()) {
+		if(!playerController.isPlayerInvincible()) {
 			for(GameObject e: dataController.getEnemies()) {
-				if(getDistance(e, user) <= e.getSize() + user.getSize()) {
-					user.getHit();
+				if(getDistance(e, player) <= e.getSize() + player.getSize()) {
+					playerController.damagePlayer();
 					return;
 				}
 			}
@@ -33,7 +33,7 @@ public class PhysicsEngine {
 
 	public void handleBulletEnemyCollision() {
 		int i;
-		for (Bullet b : user.getBullets()) {
+		for (Bullet b : player.getBullets()) {
 			for (i = 0; i < dataController.getEnemies().size(); i++) {
 				if (getDistance(b, dataController.getEnemies().get(i)) <= b.getSize()
 						+ dataController.getEnemies().get(i).getSize()) {

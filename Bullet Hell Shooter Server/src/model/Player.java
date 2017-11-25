@@ -4,12 +4,18 @@ import java.util.ArrayList;
 
 public class Player extends GameObject{
 
+	String username;
+	short hp;
 	short playerID;
 	short direction = 0;
 	
 	ArrayList<Bullet> bullets;
 	
 	ArrayList<Integer> enemiesHit = new ArrayList<Integer>();
+	
+	public Player() {
+		
+	}
 	
 	public Player(ArrayList<Bullet> bullets) {
 		this.bullets = bullets;
@@ -57,5 +63,17 @@ public class Player extends GameObject{
 	
 	public ArrayList<Integer> getHitEnemies(){
 		return enemiesHit;
+	}
+	
+	public String getUsername() {
+		return username;
+	}
+	
+	public void setHP(short hp) {
+		this.hp = hp;
+	}
+	
+	public short getHP() {
+		return hp;
 	}
 }

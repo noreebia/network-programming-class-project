@@ -1,7 +1,6 @@
 package bhs.client.game.client_exclusive;
 
-
-import model.*;
+import model.GameObject;
 import processing.core.PApplet;
 
 public class ParticleSystem {

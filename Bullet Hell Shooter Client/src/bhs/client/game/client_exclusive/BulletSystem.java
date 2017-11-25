@@ -2,12 +2,13 @@ package bhs.client.game.client_exclusive;
 
 import java.util.ArrayList;
 
+import model.Bullet;
+import model.Player;
 import processing.core.PApplet;
-import model.*;
 
 public class BulletSystem {
 	PApplet world;
-	User owner;
+	Player owner;
 	boolean isFiring;
 	int length = 9;
 	int width = 4;
@@ -22,10 +23,13 @@ public class BulletSystem {
 	public ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 	
 	public ArrayList<Integer> collidedBullets = new ArrayList<Integer>();
-
-	public BulletSystem(PApplet world, User owner) {
+	
+	public short[] bulletRGB;
+	
+	public BulletSystem(PApplet world, Player owner, short[] bulletRGB) {
 		this.world = world;
 		this.owner = owner;
+		this.bulletRGB = bulletRGB;
 	}
 
 	public void display() {
@@ -50,11 +54,12 @@ public class BulletSystem {
 	
 	public void fire() {
 		if (isFiring) {
-			float bulletSpawnLocationX = (float) (owner.x + 1.5 * Math.sin(owner.directionModifier * Math.PI / 4) * length);
-			float bulletSpawnLocationY = (float) (owner.y - 1.5 * Math.cos(owner.directionModifier * Math.PI / 4) * length);
+			float bulletSpawnLocationX = (float) (owner.x + 1.5 * Math.sin(owner.getDirection() * Math.PI / 4) * length);
+			float bulletSpawnLocationY = (float) (owner.y - 1.5 * Math.cos(owner.getDirection() * Math.PI / 4) * length);
+
 			if (world.millis() - lastFiredTime >= reloadTime) {
-				bullets.add(new Bullet(bulletSpawnLocationX, bulletSpawnLocationY, owner.directionModifier));
-				bullets.get(bullets.size()-1).setRGB(owner.getBackupRGB(0), owner.getBackupRGB(1), owner.getBackupRGB(2));
+				bullets.add(new Bullet(bulletSpawnLocationX, bulletSpawnLocationY, owner.getDirection()));
+				bullets.get(bullets.size()-1).setRGB(getBulletRGB(0), getBulletRGB(1), getBulletRGB(2));
 				lastFiredTime = world.millis();
 			}
 		}
@@ -64,11 +69,7 @@ public class BulletSystem {
 		int i;
 		for(i =0; i < bullets.size(); i++) {
 			moveBullet(bullets.get(i));
-			/*
-			if( bullets.get(i).isOutOfMap() || !bullets.get(i).isActive()) {
-				bullets.remove(i);
-			}
-			*/
+
 			if( bullets.get(i).isOutOfMap(world.width, world.height) || !bullets.get(i).isActive()) {
 				bullets.remove(i);
 			}
@@ -130,12 +131,16 @@ public class BulletSystem {
 	public ArrayList<Bullet> getBullets(){
 		return bullets;
 	}
-	
+		
 	public void startFiring() {
 		isFiring = true;
 	}
 	
 	public void stopFiring() {
 		isFiring = false;
+	}
+	
+	public short getBulletRGB(int i) {
+		return bulletRGB[i];
 	}
 }

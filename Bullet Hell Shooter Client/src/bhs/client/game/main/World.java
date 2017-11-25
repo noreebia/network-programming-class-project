@@ -29,9 +29,6 @@ public class World extends PApplet {
 
 	byte buf[] = new byte[8192];
 
-	User user = new User(this);
-	Player player = new Player(user.getBullets());
-
 	DataController dataController = new DataController();
 
 	short connectionID;
@@ -41,6 +38,9 @@ public class World extends PApplet {
 
 	DisplayHandler displayHandler;
 	PhysicsEngine physicsEngine;
+	
+	Player player = new Player();
+	PlayerController playerController = new PlayerController(this, player);
 
 	public World(int serverPort, int playerID) {
 		System.out.println("initializing world");
@@ -82,30 +82,29 @@ public class World extends PApplet {
 		//Random rand = new Random();
 		//short randomShort = (short)rand.nextInt(100);
 		//player.setID((short)1);
-		player.setID((short)playerID);
-		connectionID = (short) playerID;
+		try {
+			player.setID((short)playerID);
+			connectionID = (short) playerID;
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void settings() {
 		size(1200, 800);
 
 		/* can only do this after calling size() */
-		user.setXY(width / 2, height / 2);
-		initializePlayer();
+		playerController.initializePlayer();
 
 		/* starting executor threads */
-		executor.execute(new InputHandlingThread(socket, dataController, connectionID, user));
+		executor.execute(new InputHandlingThread(socket, dataController, connectionID));
 		ses.scheduleAtFixedRate(new OutputHandlingThread(socket, serverAddress, serverPort, player), 0, 8,
 				TimeUnit.MILLISECONDS);
 
-		displayHandler = new DisplayHandler(this, connectionID, dataController, user);
-		physicsEngine = new PhysicsEngine(dataController, user, player);
+		displayHandler = new DisplayHandler(this, connectionID, dataController, player);
+		physicsEngine = new PhysicsEngine(dataController, player, playerController);
 	}
 
-	public void initializePlayer() {
-		player.setX(user.getX());
-		player.setY(user.getY());
-	}
 
 	public void setup() {
 		strokeWeight((float) 1.5);
@@ -114,9 +113,8 @@ public class World extends PApplet {
 
 	public void draw() {
 		background(0);
-
-		user.run();
-		user.writeInfoInto(player);
+		
+		playerController.run();
 
 		displayHandler.run();
 		physicsEngine.run();
@@ -129,62 +127,61 @@ public class World extends PApplet {
 
 	public void keyPressed() {
 		if (keyCode == UP) {
-			user.shouldFace(0, true);
+			playerController.shouldFace(0, true);
 		}
 		if (keyCode == LEFT) {
-			user.shouldFace(1, true);
+			playerController.shouldFace(1, true);
 		}
 		if (keyCode == DOWN) {
-			user.shouldFace(2, true);
+			playerController.shouldFace(2, true);
 		}
 		if (keyCode == RIGHT) {
-			user.shouldFace(3, true);
+			playerController.shouldFace(3, true);
 		}
 		if (key == 'w') {
-
-			user.shouldMove(0, true);
+			playerController.shouldMove(0, true);
 		}
 		if (key == 'a') {
-			user.shouldMove(1, true);
+			playerController.shouldMove(1, true);
 		}
 		if (key == 's') {
-			user.shouldMove(2, true);
+			playerController.shouldMove(2, true);
 		}
 		if (key == 'd') {
-			user.shouldMove(3, true);
+			playerController.shouldMove(3, true);
 		}
 		if (key == ' ') {
-			user.shoot();
+			playerController.shoot();
 		}
 	}
 
 	public void keyReleased() {
 		if (keyCode == UP) {
-			user.shouldFace(0, false);
+			playerController.shouldFace(0, false);
 		}
 		if (keyCode == LEFT) {
-			user.shouldFace(1, false);
+			playerController.shouldFace(1, false);
 		}
 		if (keyCode == DOWN) {
-			user.shouldFace(2, false);
+			playerController.shouldFace(2, false);
 		}
 		if (keyCode == RIGHT) {
-			user.shouldFace(3, false);
+			playerController.shouldFace(3, false);
 		}
 		if (key == 'w') {
-			user.shouldMove(0, false);
+			playerController.shouldMove(0, false);
 		}
 		if (key == 'a') {
-			user.shouldMove(1, false);
+			playerController.shouldMove(1, false);
 		}
 		if (key == 's') {
-			user.shouldMove(2, false);
+			playerController.shouldMove(2, false);
 		}
 		if (key == 'd') {
-			user.shouldMove(3, false);
+			playerController.shouldMove(3, false);
 		}
 		if (key == ' ') {
-			user.stopShooting();
+			playerController.stopShooting();
 		}
 	}
 }
