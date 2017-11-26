@@ -47,6 +47,7 @@ public class Player extends GameObject{
 		this.setRGB(player.getRGB(0), player.getRGB(1), player.getRGB(2));
 		this.setBullets(player.getBullets());
 		this.setDirection(player.getDirection());
+		this.setHP((short)player.getHP());
 	}
 	
 	public void setBullets(ArrayList<Bullet> bullets) {
