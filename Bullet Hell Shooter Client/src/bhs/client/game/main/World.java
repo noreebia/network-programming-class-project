@@ -40,13 +40,14 @@ public class World extends PApplet {
 	PhysicsEngine physicsEngine;
 
 	Player player = new Player();
-	PlayerController playerController = new PlayerController(this, player);
+	PlayerController playerController;
 
-	public World(int serverPort, int playerID) {
+	public World(String serverIP, int serverPort, int playerID, String username) {
+		playerController = new PlayerController(this,player,username);
+
 		System.out.println("initializing world");
 		try {
-			serverAddress = InetAddress.getByName("localhost");
-			// serverAddress = InetAddress.getByName("192.168.0.12");
+			serverAddress = InetAddress.getByName(serverIP);
 			this.serverPort = serverPort;
 			socket = new DatagramSocket();
 		} catch (Exception e) {

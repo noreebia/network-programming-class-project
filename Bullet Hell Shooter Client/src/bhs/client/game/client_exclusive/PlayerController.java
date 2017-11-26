@@ -7,9 +7,11 @@ import game.protocol.Player;
 import processing.core.PApplet;
 
 public class PlayerController {
+	
 	Player player;
-
 	BulletSystem bulletSystem;
+	
+	String username;
 	
 	PApplet world;
 
@@ -29,12 +31,14 @@ public class PlayerController {
 	int colorFlashCount;
 	short[] backupRGB;
 
-	public PlayerController(PApplet world, Player player) {
+	public PlayerController(PApplet world, Player player, String username) {
 		this.world = world;
 		this.player = player;
+		this.username = username;
 	}
 	
 	public void initializePlayer() {
+		player.setUsername(username);
 		player.setX(world.width/2);
 		player.setY(world.height/2);
 		player.setRGB((short)0, (short)255, (short)255);

@@ -17,14 +17,18 @@ public class InputHandler extends Thread{
 
 	Socket socket;
 	ObjectInputStream ois;
-	boolean stop = false;
+	boolean run = true;
 	JTextArea chatbox;
 	JList roomListBox;
+	String username;
+	String serverIP;
 	
-	public InputHandler(Socket socket, JTextArea chatbox, JList roomListBox) {
+	public InputHandler(Socket socket, JTextArea chatbox, JList roomListBox, String username, String serverIP) {
 		this.socket = socket;
 		this.chatbox = chatbox;
 		this.roomListBox = roomListBox;
+		this.username = username;
+		this.serverIP = serverIP;
 		try {
 			ois = new ObjectInputStream(socket.getInputStream());
 		} catch (IOException e) {
@@ -37,7 +41,7 @@ public class InputHandler extends Thread{
 		String messageContents;
 		Message message = null;
 		String[] sketchArgs = {"Game"};
-		while(!shouldStop()) {
+		while(shouldRun()) {
 			try {
 				message = (Message) ois.readObject();
 				System.out.println("received message from server");
@@ -56,7 +60,7 @@ public class InputHandler extends Thread{
 			case "create game response":
 				System.out.println("received response to 'host game' button click");
 				int roomPort = (int) message.getData();
-				world = new World(roomPort, 0);
+				world = new World(serverIP, roomPort, 0, username);
 				PApplet.runSketch(sketchArgs, world);
 				break;
 			case "room list update":
@@ -69,7 +73,7 @@ public class InputHandler extends Thread{
 				break;
 			case "join game response":
 				int[] roomInfo = (int[]) message.getData();
-				world = new World(roomInfo[0], roomInfo[1]);
+				world = new World(serverIP, roomInfo[0], roomInfo[1], username);
 				PApplet.runSketch(sketchArgs, world);
 				break;
 			}
@@ -77,11 +81,11 @@ public class InputHandler extends Thread{
 		return;
 	}
 	
-	public boolean shouldStop() {
-		return stop;
+	public boolean shouldRun() {
+		return run;
 	}
 	
 	public void terminate() {
-		stop = true;
+		run = false;
 	}
 }

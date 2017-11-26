@@ -236,9 +236,8 @@ public class StartScreen extends javax.swing.JFrame {
 		if (serverResponse.equals("duplicate")) {
 			System.out.println("Duplicate nickname. Choose another nickname.");
 		} else if (serverResponse.equals("connected")) {
-			Lobby lobby = new Lobby(socket);
+			Lobby lobby = new Lobby(socket, jTextField1.getText(), jTextField3.getText());
 			lobby.setVisible(true);
-
 			this.dispose();
 		}
 		/*

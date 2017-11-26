@@ -20,13 +20,15 @@ import protocol.Message;
 public class Lobby extends javax.swing.JFrame {
 
 	Socket socket;
+	String username;
 	ObjectOutputStream oos;
 	InputHandler inputHandler;
     /**
      * Creates new form Lobby
      */
-    public Lobby(Socket socket) {
-        initComponents();
+    public Lobby(Socket socket, String username, String serverIP) {
+        this.username = username;
+    	initComponents();
         jRadioButton7.setSelected(true);
         this.socket = socket;
         try {
@@ -34,7 +36,7 @@ public class Lobby extends javax.swing.JFrame {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-        inputHandler = new InputHandler(socket, jTextArea1, jList1);
+        inputHandler = new InputHandler(socket, jTextArea1, jList1, username, serverIP);
         inputHandler.start();
     }
 

@@ -19,7 +19,7 @@ public class DisplayHandler {
 	int durationOfLevelChangeDisplay = 1000;
 	int aliveEnemies;
 	int textOffset = 100;
-	
+
 	Player user;
 
 	public DisplayHandler(PApplet world, short connectionID, DataController dataController, Player user) {
@@ -53,26 +53,57 @@ public class DisplayHandler {
 			dataController.getExplosions().remove(i);
 		}
 	}
-	
+
 	public void drawUser() {
 		world.pushMatrix();
 		world.translate(user.getX(), user.getY());
 		for (int i = 0; i < 3; i++) {
 			world.stroke(255);
-			if (i+1 > user.getHP()) {
+			if (i + 1 > user.getHP()) {
 				world.fill(0);
 			} else {
 				world.fill(255);
 			}
 			world.ellipse((i - 1) * 15, 30, 10, 10);
 		}
-		world.rotate((float) (Math.PI/4 * user.getDirection()));
+		world.textSize(15);
+		world.fill(255);
+		float usernameTextWidth = world.textWidth(user.getUsername());
+		world.text(user.getUsername(), -usernameTextWidth / 2, -20);
+		world.rotate((float) (Math.PI / 4 * user.getDirection()));
 		setStrokeAndFillOf(user);
 		world.beginShape();
 		world.vertex(0, -user.getSize() - 5);
 		world.vertex(-user.getSize(), 5);
 		world.vertex(0, 15);
 		world.vertex(user.getSize(), 5);
+		world.endShape(world.CLOSE);
+		world.popMatrix();
+	}
+	
+	public void drawPlayer(Player player) {		
+		world.pushMatrix();
+		world.translate(player.getX(), player.getY());
+		for (int i = 0; i < 3; i++) {
+			world.stroke(255);
+			if (i + 1 > player.getHP()) {
+				world.fill(0);
+			} else {
+				world.fill(255);
+			}
+			world.ellipse((i - 1) * 15, 30, 10, 10);
+		}
+		world.textSize(15);
+		world.fill(255);
+		float usernameTextWidth = world.textWidth(player.getUsername());
+		world.text(player.getUsername(), -usernameTextWidth / 2, -20);
+		world.rotate((float) (Math.PI / 4 * player.getDirection()));
+		setStrokeAndFillOf(player);
+		world.beginShape();
+		world.vertex(0, -player.getSize() - 5);
+		world.vertex(-player.getSize(), 5);
+		world.vertex(0, 15);
+		world.vertex(player.getSize(), 5);
 		world.endShape(world.CLOSE);
 		world.popMatrix();
 	}
@@ -100,21 +131,11 @@ public class DisplayHandler {
 				world.ellipse(p.getX(), p.getY(), 5, 5);
 			}
 			// System.out.println("Num of player bullets: " + p.getBullets().size());
-			/*
-			 * for (Bullet b : p.getBullets()) { drawBullet(b); }
-			 */
+
+			for (Bullet b : p.getBullets()) {
+				drawBullet(b);
+			}
 		}
-	}
-
-	public void drawPlayer(Player player) {
-		world.pushMatrix();
-		world.translate(player.getX(), player.getY());
-
-		world.rotate(world.PI / 4 * player.getDirection());
-		setStrokeAndFillOf(player);
-		world.ellipse(0, 0, player.size * 2, player.size * 2);
-		world.rect(-2, -player.size, 4, -9);
-		world.popMatrix();
 	}
 
 	public void drawBullet(Bullet bullet) {
