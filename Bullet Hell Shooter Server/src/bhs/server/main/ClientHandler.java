@@ -25,6 +25,8 @@ public class ClientHandler extends Thread {
 
 	ObjectOutputStream oos;
 	ObjectInputStream ois;
+	
+	boolean run = true;
 
 	public ClientHandler(Client client, CopyOnWriteArrayList<Client> clientList, CopyOnWriteArrayList<ClientHandler> clientHandlingThreads, CopyOnWriteArrayList<Room> rooms, AtomicInteger uniqueRoomID) {
 		this.client = client;
@@ -33,10 +35,6 @@ public class ClientHandler extends Thread {
 		this.rooms = rooms;
 		this.uniqueRoomID = uniqueRoomID;
 		try {
-			// input = new BufferedReader(new
-			// InputStreamReader(client.getSocket().getInputStream()));
-			// output = new PrintWriter(client.getSocket().getOutputStream(), true);
-
 			oos = new ObjectOutputStream(client.getSocket().getOutputStream());
 			ois = new ObjectInputStream(client.getSocket().getInputStream());
 		} catch (Exception e) {
@@ -50,30 +48,28 @@ public class ClientHandler extends Thread {
 		Message outgoingMessage = null;
 		String request;
 		String messageData;
-		while (true) {
+		ArrayList<String> listOfRooms;
+		while (shouldRun()) {
 			System.out.println("listening for client input...");
-			// message = input.readLine();
 			try {
 				incomingMessage = (Message) ois.readObject();
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
-				disconnectClient();
+				terminate();
 				System.exit(1);
 				break;
 			} catch (SocketException e) {
-				disconnectClient();
+				terminate();
 				break;
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.exit(1);
 			}
 			if (incomingMessage == null) {
-				disconnectClient();
+				terminate();
 				break;
 			}
-
 			request = incomingMessage.getContents();
-
 			System.out.println("From client: " + client.getNickname());
 			System.out.println("Message contents: " + request);
 			switch (request) {
@@ -83,7 +79,6 @@ public class ClientHandler extends Thread {
 				System.out.println(modifiedMessage);
 				outgoingMessage = new Message("chatboxUpdate", modifiedMessage);
 				sendToAllClients(outgoingMessage);
-				//sendToAllClients(client.getNickname() + ":" + chatMessage+"\n");
 				break;
 			case "create game":
 				int newRoomID = uniqueRoomID.getAndIncrement();
@@ -96,11 +91,11 @@ public class ClientHandler extends Thread {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				ArrayList<String> listOfRooms= new ArrayList<String>();
+				listOfRooms= new ArrayList<String>();
 				for(Room r:rooms) {
 					listOfRooms.add("Room " + r.getID());
 				}
-				outgoingMessage = new Message("room list update", listOfRooms);
+				outgoingMessage = new Message("refresh room list response", listOfRooms);
 				sendToAllClients(outgoingMessage);
 				break;
 			case "join game":
@@ -109,18 +104,28 @@ public class ClientHandler extends Thread {
 					if(r.getID() == roomID) {
 						int[] roomInfo = {r.getPort(), r.getUniquePlayerID()};
 						outgoingMessage = new Message("join game response", roomInfo);
-						sendMessage(outgoingMessage);
+						sendToClient(outgoingMessage);
 						break;
 					}
 				}
 				break;
+			case "refresh room list":
+				listOfRooms= new ArrayList<String>();
+				for(Room r:rooms) {
+					listOfRooms.add("Room " + r.getID());
+				}
+				outgoingMessage = new Message("refresh room list response", listOfRooms);
+				sendToClient(outgoingMessage);
+				break;
 			}
 		}
 		System.out.println("client has disconnected. terminating");
+		disconnectClient();
+		removeSelfFromArray();
 		return;
 	}
 	
-	public void sendMessage(Message message) {
+	public void sendToClient(Message message) {
 		try {
 			oos.writeObject(message);
 		} catch (IOException e) {
@@ -130,44 +135,23 @@ public class ClientHandler extends Thread {
 	
 	public void sendToAllClients(Message message) {
 		for(ClientHandler ch: clientHandlingThreads) {
-			ch.sendMessage(message);
+			ch.sendToClient(message);
 		}
 	}
-	/*
-	public void sendMessage(String chatMessage) {
-		Message message = new Message("chatboxUpdate", chatMessage);
-		try {
-			oos.writeObject(message);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void sendToAllClients(String chatMessage) {
-		try {
-			for (ClientHandler ch : clientHandlingThreads) {
-				ch.sendMessage(chatMessage);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	*/
-	/*
-	 * public void sendToAllClients(String chatMessage) { Socket tempSocket;
-	 * ObjectOutputStream tempOos = null; Message message = new
-	 * Message("chatboxUpdate", chatMessage); for(Client c: clientList) { tempSocket
-	 * = c.getSocket(); try { tempOos = new
-	 * ObjectOutputStream(tempSocket.getOutputStream()); } catch (IOException e) {
-	 * e.printStackTrace(); } try { tempOos.writeObject(message); } catch
-	 * (IOException e) { e.printStackTrace(); } } }
-	 */
 
 	public void disconnectClient() {
 		clientList.remove(client);
 	}
 	
-	public void terminate() {
+	public boolean shouldRun() {
+		return run;
+	}
+	
+	public void removeSelfFromArray() {
 		clientHandlingThreads.remove(this);
+	}
+	
+	public void terminate() {
+		this.run = false;
 	}
 }

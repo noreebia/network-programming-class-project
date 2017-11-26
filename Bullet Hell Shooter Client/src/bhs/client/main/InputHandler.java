@@ -63,7 +63,7 @@ public class InputHandler extends Thread{
 				world = new World(serverIP, roomPort, 0, username);
 				PApplet.runSketch(sketchArgs, world);
 				break;
-			case "room list update":
+			case "refresh room list response":
 				ArrayList<String> roomList = (ArrayList<String>) message.getData();
 				DefaultListModel<String> listModel = new DefaultListModel<>();
 				for(String roomInfo: roomList) {
