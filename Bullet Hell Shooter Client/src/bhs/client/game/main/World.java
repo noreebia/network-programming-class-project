@@ -1,6 +1,7 @@
 package bhs.client.game.main;
 
 import java.io.ByteArrayOutputStream;
+import controlP5.*;
 import java.io.IOException;
 import java.awt.Frame;
 import java.io.*;
@@ -48,6 +49,8 @@ public class World extends PApplet {
 
 	String username;
 	
+	ControlP5 cp5;
+	
 	boolean shouldRun = false;
 
 	public World(String username, JFrame lobby) {
@@ -62,6 +65,9 @@ public class World extends PApplet {
 	public void setup() {
 		strokeWeight((float) 1.5);
 		stroke(255);
+		cp5 = new ControlP5(this);
+		cp5.addBang("shutdown").setCaptionLabel("EXIT").setPosition(width-120, height-60).setSize(100,40).getCaptionLabel().align(ControlP5.CENTER,ControlP5.CENTER);
+		
 		frame = ((SmoothCanvas) ((PSurfaceAWT) surface).getNative()).getFrame();
 		frame.setVisible(false);
 		noLoop();
@@ -113,12 +119,12 @@ public class World extends PApplet {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		
 	}
 
 	public void draw() {
 		if(shouldRun) {
 			background(0);
+			//rect(width/400, height-200,400,200);
 			playerController.run();
 			displayHandler.run();
 			physicsEngine.run();
@@ -184,6 +190,8 @@ public class World extends PApplet {
 			playerController.stopShooting();
 		}
 	}
+	
+	
 
 	public void shutdown() {
 		shouldRun = false;

@@ -5,6 +5,7 @@ import game.protocol.Bullet;
 import game.protocol.GameObject;
 import game.protocol.Player;
 import processing.core.PApplet;
+import processing.core.PFont;
 
 public class DisplayHandler {
 
@@ -22,6 +23,7 @@ public class DisplayHandler {
 	int textOffset = 100;
 
 	Player user;
+	PFont font;
 
 	public DisplayHandler(PApplet world, short connectionID, DataController dataController, Player user) {
 		this.world = world;
@@ -33,6 +35,8 @@ public class DisplayHandler {
 		for (i = 0; i < numberOfParticleSystems; i++) {
 			particleSystems[i] = new ParticleSystem(world);
 		}
+		font = world.createFont("Arial", 26);
+		world.textFont(font);
 	}
 
 	public void run() {
