@@ -24,7 +24,8 @@ public class OutputHandlingThread implements Runnable {
 
 	EnemySystem enemySystem;
 
-	public OutputHandlingThread(DatagramSocket ioSocket, DataController dataController, CopyOnWriteArrayList<Client> clients, EnemySystem enemySystem) {
+	public OutputHandlingThread(DatagramSocket ioSocket, DataController dataController,
+			CopyOnWriteArrayList<Client> clients, EnemySystem enemySystem) {
 		System.out.println("OutputHandlingThread created");
 		this.ioSocket = ioSocket;
 		try {
@@ -39,55 +40,40 @@ public class OutputHandlingThread implements Runnable {
 	}
 
 	public void run() {
-		try {
-			enemySystem.run();
-
+		if (clients.size() > 0) {
 			try {
-				baos.reset();
-				os = new ObjectOutputStream(baos);
-				os.writeObject(dataController.getData());
-			} catch (IOException e) {
+				enemySystem.run();
+
+				try {
+					baos.reset();
+					os = new ObjectOutputStream(baos);
+					os.writeObject(dataController.getData());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				buf = baos.toByteArray();
+
+				for (Client c : clients) {
+					if (System.currentTimeMillis() - c.getLastSentTime() <= 2000) {
+						packet = new DatagramPacket(buf, buf.length, c.getAddress(), c.getPort());
+						try {
+							ioSocket.send(packet);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						System.out.println("Sent to:" + c.getAddress().toString());
+					} else {
+						dataController.removePlayer((short) c.getID());
+						clients.remove(c);
+					}
+				}
+
+				if (dataController.getExplosions().size() > 0) {
+					dataController.clearExplosions();
+				}
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			buf = baos.toByteArray();
-			
-			/*
-			int i;
-			for(i=0; i< clients.size(); i++) {
-				if(System.currentTimeMillis() - clients.get(i).getLastSentTime() <= 2000) {
-					packet = new DatagramPacket(buf, buf.length, clients.get(i).getAddress(), clients.get(i).getPort());
-					try {
-						ioSocket.send(packet);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					System.out.println("Sent to:" + clients.get(i).getAddress().toString());
-				}
-			}
-			*/
-			
-			for (Client c : clients) {
-				if(System.currentTimeMillis() - c.getLastSentTime() <= 2000) {
-					packet = new DatagramPacket(buf, buf.length, c.getAddress(), c.getPort());
-					try {
-						ioSocket.send(packet);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					System.out.println("Sent to:" + c.getAddress().toString());
-				}else {
-					dataController.removePlayer((short) c.getID());
-					clients.remove(c);
-				}
-			}
-			
-			//System.out.println("Length of sent data in byte: " + buf.length);
-			//System.out.println("number of explosions sent: " + dataController.getExplosions().size());
-			if (dataController.getExplosions().size() > 0) {
-				dataController.clearExplosions();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 }

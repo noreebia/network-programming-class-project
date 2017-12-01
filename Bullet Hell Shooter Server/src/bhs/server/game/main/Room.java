@@ -39,7 +39,7 @@ public class Room {
 	ExecutorService executor = Executors.newCachedThreadPool();
 	ScheduledExecutorService ses = Executors.newScheduledThreadPool(3);
 	
-	AtomicInteger uniquePlayerID = new AtomicInteger(1);
+	AtomicInteger uniquePlayerID = new AtomicInteger();
 	
 	public Room(int id) {
 		this.id = id;

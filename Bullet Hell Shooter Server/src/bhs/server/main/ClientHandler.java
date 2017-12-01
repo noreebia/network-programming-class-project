@@ -81,6 +81,7 @@ public class ClientHandler extends Thread {
 				sendToAllClients(outgoingMessage);
 				break;
 			case "create game":
+				/*
 				int newRoomID = uniqueRoomID.getAndIncrement();
 				Room newRoom = new Room(newRoomID);
 				int newRoomPort = newRoom.getPort();
@@ -91,15 +92,15 @@ public class ClientHandler extends Thread {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				listOfRooms= new ArrayList<String>();
-				for(Room r:rooms) {
-					listOfRooms.add("Room " + r.getID());
-				}
-				outgoingMessage = new Message("refresh room list response", listOfRooms);
-				sendToAllClients(outgoingMessage);
+				refreshEveryClient();
+				*/
+				int newRoomID = createRoom();
+				sendRoomInfo(newRoomID);
 				break;
 			case "join game":
 				int roomID = (int) incomingMessage.getData();
+				sendRoomInfo(roomID);
+				/*
 				for(Room r:rooms) {
 					if(r.getID() == roomID) {
 						int[] roomInfo = {r.getPort(), r.getUniquePlayerID()};
@@ -108,14 +109,10 @@ public class ClientHandler extends Thread {
 						break;
 					}
 				}
+				*/
 				break;
 			case "refresh room list":
-				listOfRooms= new ArrayList<String>();
-				for(Room r:rooms) {
-					listOfRooms.add("Room " + r.getID());
-				}
-				outgoingMessage = new Message("refresh room list response", listOfRooms);
-				sendToClient(outgoingMessage);
+				refreshEveryClient();
 				break;
 			}
 		}
@@ -123,6 +120,35 @@ public class ClientHandler extends Thread {
 		disconnectClient();
 		removeSelfFromArray();
 		return;
+	}
+	
+	public int createRoom() {
+		int newRoomID = uniqueRoomID.getAndIncrement();
+		Room newRoom = new Room(newRoomID);
+		int newRoomPort = newRoom.getPort();
+		rooms.add(newRoom);
+		return newRoomID;
+	}
+	
+	public void sendRoomInfo(int roomID) {
+		Message message;
+		for(Room r:rooms) {
+			if(r.getID() == roomID) {
+				int[] roomInfo = {r.getPort(), r.getUniquePlayerID()};
+				message = new Message("join game response", roomInfo);
+				sendToClient(message);
+				break;
+			}
+		}
+	}
+	
+	public void refreshEveryClient() {
+		ArrayList<String> listOfRooms= new ArrayList<String>();
+		for(Room r:rooms) {
+			listOfRooms.add("Room " + r.getID());
+		}
+		Message message = new Message("refresh room list response", listOfRooms);
+		sendToAllClients(message);
 	}
 	
 	public void sendToClient(Message message) {

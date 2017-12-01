@@ -61,14 +61,9 @@ public class InputHandler extends Thread{
 				String messageData = (String) message.getData();
 				chatbox.append(messageData);
 				break;
-			case "create game response":
-				System.out.println("received response to 'host game' button click");
-				int roomPort = (int) message.getData();
-				world.setConnection(socket.getInetAddress().getHostAddress(), roomPort, 0);
-				world.initializeWorld();
-				break;
 			case "refresh room list response":
 				ArrayList<String> roomList = (ArrayList<String>) message.getData();
+				listModel.clear();
 				for(String roomInfo: roomList) {
 					listModel.addElement(roomInfo);
 				}

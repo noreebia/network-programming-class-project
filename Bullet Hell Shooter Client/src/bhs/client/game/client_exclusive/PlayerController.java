@@ -48,7 +48,6 @@ public class PlayerController {
 		
 		backupRGB = player.getRGB().clone();
 		bulletSystem = new BulletSystem(world, player, backupRGB);		
-		player.setBullets(bulletSystem.getBullets());
 		player.setHP((short) 3);
 		player.setAlive(true);
 		player.setID(playerID);
@@ -59,7 +58,6 @@ public class PlayerController {
 			setSpeed();
 			setDirection();
 			movePlayer();
-			bulletSystem.run();
 			deactivateInvincibility();
 		}
 	}
@@ -189,7 +187,7 @@ public class PlayerController {
 		return backupRGB[i];
 	}
 	
-	public ArrayList<Bullet> getBullets(){
-		return bulletSystem.getBullets();
+	public BulletSystem getBulletSystem() {
+		return bulletSystem;
 	}
 }

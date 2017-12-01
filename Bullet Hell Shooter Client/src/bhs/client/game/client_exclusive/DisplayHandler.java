@@ -20,7 +20,7 @@ public class DisplayHandler {
 	int durationOfLevelChangeDisplay = 1000;
 	int aliveEnemies;
 	int alivePlayers;
-	int textOffset = 100;
+	int textOffset = 30;
 
 	Player user;
 	PFont font;
@@ -35,7 +35,7 @@ public class DisplayHandler {
 		for (i = 0; i < numberOfParticleSystems; i++) {
 			particleSystems[i] = new ParticleSystem(world);
 		}
-		font = world.createFont("Arial", 26);
+		font = world.createFont("sans-serif", 100, true);
 		world.textFont(font);
 	}
 
@@ -183,13 +183,13 @@ public class DisplayHandler {
 		world.textSize(26);
 		/* display level */
 		float widthOfString = world.textWidth("LEVEL " + dataController.getLevel());
-		world.text("LEVEL " + dataController.getLevel(), world.width / 2 - widthOfString / 2, 30);
+		world.text("LEVEL " + dataController.getLevel(), world.width/2 - widthOfString/2, 30);
 		/* display number of enemies left alive */
 		widthOfString = world.textWidth("ENEMIES LEFT: " + aliveEnemies);
-		world.text("ENEMIES LEFT: " + aliveEnemies, world.width - (widthOfString + textOffset), 30);
+		world.text("ENEMIES LEFT: " + aliveEnemies, world.width - (widthOfString + textOffset), textOffset);
 		alivePlayers = dataController.getAlivePlayers();
 		widthOfString = world.textWidth("PLAYERS ALIVE: " + alivePlayers);
-		world.text("PLAYERS ALIVE: " + alivePlayers, 30, 30);
+		world.text("PLAYERS ALIVE: " + alivePlayers, textOffset, textOffset);
 		if(alivePlayers <= 0) {
 			
 		}

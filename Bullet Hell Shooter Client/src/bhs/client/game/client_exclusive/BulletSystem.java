@@ -29,6 +29,7 @@ public class BulletSystem {
 	public BulletSystem(PApplet world, Player owner, short[] bulletRGB) {
 		this.world = world;
 		this.owner = owner;
+		owner.setBullets(getBullets());
 		this.bulletRGB = bulletRGB;
 	}
 
