@@ -47,17 +47,19 @@ public class PlayerController {
 		bulletSystem = new BulletSystem(world, player, backupRGB);		
 		player.setBullets(bulletSystem.getBullets());
 		player.setHP((short) 3);
+		player.setAlive(true);
 	}
 	
 	public void run() {
-		setSpeed();
-		setDirection();
-		movePlayer();
-		bulletSystem.run();
-		deactivateInvincibility();
+		if(player.isAlive()) {
+			setSpeed();
+			setDirection();
+			movePlayer();
+			bulletSystem.run();
+			deactivateInvincibility();
+		}
 	}
 	
-
 	public void setSpeed() {
 		int count = 0;
 		for (int i = 0; i < moving.length; i++) {
@@ -118,10 +120,17 @@ public class PlayerController {
 	}
 
 	public void damagePlayer() {
-		if (!isPlayerInvincible()) {
-			player.setHP((short) (player.getHP() - 1));
-			setPlayerInvicibility(true);
-			timeOfHit = System.currentTimeMillis();
+		if(player.isAlive()) {
+			if (!isPlayerInvincible()) {
+				player.setHP((short) (player.getHP() - 1));
+				if(player.getHP() <= 0) {
+					player.setAlive(false);
+					return;
+				}else {
+					setPlayerInvicibility(true);
+					timeOfHit = System.currentTimeMillis();
+				}
+			}
 		}
 	}
 

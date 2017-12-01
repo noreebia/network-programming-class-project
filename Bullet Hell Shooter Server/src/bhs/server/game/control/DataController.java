@@ -30,13 +30,6 @@ public class DataController {
 	}
 	
 	public void removePlayer(short playerID) {
-		/*
-		for(Player p: getPlayers()) {
-			if(p.getID() == playerID) {
-				getPlayers().remove(p);
-			}
-		}
-		*/
 		Iterator<Player> iterator = getPlayers().iterator();
 		while(iterator.hasNext()) {
 			Player player = iterator.next();

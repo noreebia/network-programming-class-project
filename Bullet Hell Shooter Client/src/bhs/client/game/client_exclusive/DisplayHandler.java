@@ -18,6 +18,7 @@ public class DisplayHandler {
 	long timeOfLevelChange;
 	int durationOfLevelChangeDisplay = 1000;
 	int aliveEnemies;
+	int alivePlayers;
 	int textOffset = 100;
 
 	Player user;
@@ -116,6 +117,7 @@ public class DisplayHandler {
 	}
 
 	public void drawPlayersAndBullets() {
+		alivePlayers=0;
 		for (Player p : dataController.getPlayers()) {
 			if (p.getID() != connectionID) {
 				System.out.println("player's id: " + p.getID());
@@ -134,6 +136,9 @@ public class DisplayHandler {
 
 			for (Bullet b : p.getBullets()) {
 				drawBullet(b);
+			}
+			if(p.isAlive()) {
+				alivePlayers++;
 			}
 		}
 	}
@@ -182,6 +187,9 @@ public class DisplayHandler {
 		/* display number of enemies left alive */
 		widthOfString = world.textWidth("ENEMIES LEFT: " + aliveEnemies);
 		world.text("ENEMIES LEFT: " + aliveEnemies, world.width - (widthOfString + textOffset), 30);
+		/* */
+		widthOfString = world.textWidth("PLAYERS ALIVE: " + alivePlayers);
+		world.text("PLAYERS ALIVE: " + alivePlayers, 30, 30);
 	}
 
 	public void displayLevelChange() {

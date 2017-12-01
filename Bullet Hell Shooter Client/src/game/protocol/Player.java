@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Player extends GameObject{
 
 	String username;
+	boolean alive;
 	short hp;
 	short playerID;
 	short direction = 0;
@@ -48,6 +49,7 @@ public class Player extends GameObject{
 		this.setBullets(player.getBullets());
 		this.setDirection(player.getDirection());
 		this.setHP((short)player.getHP());
+		this.setAlive(player.isAlive());
 	}
 	
 	public void setBullets(ArrayList<Bullet> bullets) {
@@ -80,5 +82,13 @@ public class Player extends GameObject{
 	
 	public short getHP() {
 		return hp;
+	}
+	
+	public void setAlive(boolean alive) {
+		this.alive = alive;
+	}
+	
+	public boolean isAlive() {
+		return alive;
 	}
 }
