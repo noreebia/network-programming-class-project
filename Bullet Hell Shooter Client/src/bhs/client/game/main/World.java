@@ -34,11 +34,11 @@ public class World extends PApplet {
 
 	Player player;
 
-	DataController	dataController;
+	DataController dataController;
 	PlayerController playerController;
-	DisplayHandler 	displayHandler; 
-	PhysicsEngine 	physicsEngine;
-	
+	DisplayHandler displayHandler;
+	PhysicsEngine physicsEngine;
+
 	short playerID;
 
 	ExecutorService executor;
@@ -48,9 +48,9 @@ public class World extends PApplet {
 	Frame frame;
 
 	String username;
-	
+
 	ControlP5 cp5;
-	
+
 	boolean shouldRun = false;
 
 	public World(String username, JFrame lobby) {
@@ -66,13 +66,14 @@ public class World extends PApplet {
 		strokeWeight((float) 1.5);
 		stroke(255);
 		cp5 = new ControlP5(this);
-		cp5.addBang("shutdown").setCaptionLabel("EXIT").setPosition(width-120, height-60).setSize(100,40).getCaptionLabel().align(ControlP5.CENTER,ControlP5.CENTER);
-		
+		cp5.addBang("shutdown").setCaptionLabel("EXIT").setPosition(width - 120, height - 60).setSize(100, 40)
+				.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+
 		frame = ((SmoothCanvas) ((PSurfaceAWT) surface).getNative()).getFrame();
 		frame.setVisible(false);
 		noLoop();
 	}
-	
+
 	public void setConnection(String serverIP, int serverPort, int playerID) {
 		System.out.println("initializing world");
 		try {
@@ -84,25 +85,24 @@ public class World extends PApplet {
 			System.exit(1);
 		}
 		/*
-		player.setID((short) playerID);
-		connectionID = (short) playerID;
-		*/
+		 * player.setID((short) playerID); connectionID = (short) playerID;
+		 */
 		this.playerID = (short) playerID;
 		System.out.println(playerID);
 	}
 
 	public void initializeWorld() {
-		try{
+		try {
 			frame.setVisible(true);
 			lobby.setVisible(false);
-			
+
 			executor = Executors.newCachedThreadPool();
 			ses = Executors.newScheduledThreadPool(2);
 
 			player = new Player();
 			playerController = new PlayerController(this, player, username, playerID);
 			playerController.initializePlayer();
-			
+
 			dataController = new DataController();
 
 			displayHandler = new DisplayHandler(this, playerID, dataController, player);
@@ -111,18 +111,18 @@ public class World extends PApplet {
 			executor.execute(new InputHandlingThread(socket, dataController, playerID));
 			ses.scheduleAtFixedRate(new OutputHandlingThread(socket, serverAddress, serverPort, player), 0, 8,
 					TimeUnit.MILLISECONDS);
-			
+
 			shouldRun = true;
 			loop();
-	
-		}catch(Exception e) {
+
+		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(1);
 		}
 	}
 
 	public void draw() {
-		if(shouldRun) {
+		if (shouldRun) {
 			background(0);
 			playerController.run();
 			playerController.getBulletSystem().run();
@@ -157,7 +157,9 @@ public class World extends PApplet {
 			playerController.shouldMove(3, true);
 		}
 		if (key == ' ') {
-			playerController.shoot();
+			if (playerController.isPlayerAlive()) {
+				playerController.shoot();
+			}
 		}
 	}
 
@@ -190,8 +192,6 @@ public class World extends PApplet {
 			playerController.stopShooting();
 		}
 	}
-	
-	
 
 	public void shutdown() {
 		shouldRun = false;

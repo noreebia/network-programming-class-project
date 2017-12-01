@@ -6,12 +6,12 @@ public class Player extends GameObject{
 
 	String username;
 	boolean alive;
+	boolean hit;
 	short hp;
 	short playerID;
 	short direction = 0;
 	
 	ArrayList<Bullet> bullets;
-	
 	ArrayList<Integer> enemiesHit = new ArrayList<Integer>();
 	
 	public Player() {
@@ -90,5 +90,13 @@ public class Player extends GameObject{
 	
 	public boolean isAlive() {
 		return alive;
+	}
+	
+	public void setHit(boolean hit) {
+		this.hit = hit;
+	}
+	
+	public boolean isHit() {
+		return hit;
 	}
 }

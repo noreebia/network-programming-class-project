@@ -50,6 +50,7 @@ public class PlayerController {
 		bulletSystem = new BulletSystem(world, player, backupRGB);		
 		player.setHP((short) 3);
 		player.setAlive(true);
+		player.setHit(false);
 		player.setID(playerID);
 	}
 	
@@ -124,6 +125,7 @@ public class PlayerController {
 	public void damagePlayer() {
 		if(player.isAlive()) {
 			if (!isPlayerInvincible()) {
+				player.setHit(true);
 				player.setHP((short) (player.getHP() - 1));
 				if(player.getHP() <= 0) {
 					player.setAlive(false);
@@ -189,5 +191,9 @@ public class PlayerController {
 	
 	public BulletSystem getBulletSystem() {
 		return bulletSystem;
+	}
+	
+	public boolean isPlayerAlive() {
+		return player.isAlive();
 	}
 }

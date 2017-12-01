@@ -65,6 +65,9 @@ public class OutputHandlingThread implements Runnable {
 			if(player.getHitEnemies().size() > 0) {
 				player.getHitEnemies().clear();
 			}
+			if(player.isHit()) {
+				player.setHit(false);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

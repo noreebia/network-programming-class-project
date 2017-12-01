@@ -6,6 +6,7 @@ import java.util.Random;
 
 import game.protocol.Enemy;
 import game.protocol.GameObject;
+import game.protocol.Player;
 
 
 public class EnemySystem {
@@ -78,7 +79,7 @@ public class EnemySystem {
 					if (e.getVelocityX() != -1 && e.getVelocityY() != -1) {
 						if (e.isOutOfMap(screenWidth, screenHeight)) {
 							setRandomPointAsTarget(e);
-						}
+						} 
 					} else {
 						setRandomPointAsTarget(e);
 					}
