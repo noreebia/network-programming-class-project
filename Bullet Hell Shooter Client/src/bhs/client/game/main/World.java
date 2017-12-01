@@ -2,6 +2,7 @@ package bhs.client.game.main;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.awt.Frame;
 import java.io.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -15,9 +16,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import javax.swing.JFrame;
+
 import bhs.client.game.client_exclusive.*;
 import bhs.client.game.control.DataController;
 import game.protocol.*;
+import processing.awt.PSurfaceAWT;
+import processing.awt.PSurfaceAWT.SmoothCanvas;
 import processing.core.PApplet;
 
 public class World extends PApplet {
@@ -25,26 +30,44 @@ public class World extends PApplet {
 	int serverPort;
 
 	DatagramSocket socket;
-	DatagramPacket packet;
 
-	byte buf[] = new byte[8192];
+	Player player;
 
-	DataController dataController = new DataController();
-
-	short connectionID;
-
-	ExecutorService executor = Executors.newCachedThreadPool();
-	ScheduledExecutorService ses = Executors.newScheduledThreadPool(2);
-
-	DisplayHandler displayHandler;
-	PhysicsEngine physicsEngine;
-
-	Player player = new Player();
+	DataController	dataController;
 	PlayerController playerController;
+	DisplayHandler 	displayHandler; 
+	PhysicsEngine 	physicsEngine;
+	
+	short playerID;
 
-	public World(String serverIP, int serverPort, int playerID, String username) {
-		playerController = new PlayerController(this,player,username);
+	ExecutorService executor;
+	ScheduledExecutorService ses;
 
+	JFrame lobby;
+	Frame frame;
+
+	String username;
+	
+	boolean shouldRun = false;
+
+	public World(String username, JFrame lobby) {
+		this.username = username;
+		this.lobby = lobby;
+	}
+
+	public void settings() {
+		size(1200, 800);
+	}
+
+	public void setup() {
+		strokeWeight((float) 1.5);
+		stroke(255);
+		frame = ((SmoothCanvas) ((PSurfaceAWT) surface).getNative()).getFrame();
+		frame.setVisible(false);
+		noLoop();
+	}
+	
+	public void setConnection(String serverIP, int serverPort, int playerID) {
 		System.out.println("initializing world");
 		try {
 			serverAddress = InetAddress.getByName(serverIP);
@@ -54,44 +77,52 @@ public class World extends PApplet {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		packet = new DatagramPacket(buf, buf.length, serverAddress, serverPort);
-
+		/*
 		player.setID((short) playerID);
 		connectionID = (short) playerID;
+		*/
+		this.playerID = (short) playerID;
+		System.out.println(playerID);
 	}
 
-	public void settings() {
-		size(1200, 800);
+	public void initializeWorld() {
+		try{
+			frame.setVisible(true);
+			lobby.setVisible(false);
+			
+			executor = Executors.newCachedThreadPool();
+			ses = Executors.newScheduledThreadPool(2);
 
-		/* can only do this after calling size() */
-		playerController.initializePlayer();
+			player = new Player();
+			playerController = new PlayerController(this, player, username, playerID);
+			playerController.initializePlayer();
+			
+			dataController = new DataController();
 
-		/* starting executor threads */
-		executor.execute(new InputHandlingThread(socket, dataController, connectionID));
-		ses.scheduleAtFixedRate(new OutputHandlingThread(socket, serverAddress, serverPort, player), 0, 8,
-				TimeUnit.MILLISECONDS);
+			displayHandler = new DisplayHandler(this, playerID, dataController, player);
+			physicsEngine = new PhysicsEngine(dataController, player, playerController);
 
-		displayHandler = new DisplayHandler(this, connectionID, dataController, player);
-		physicsEngine = new PhysicsEngine(dataController, player, playerController);
-	}
-
-	public void setup() {
-		strokeWeight((float) 1.5);
-		stroke(255);
+			executor.execute(new InputHandlingThread(socket, dataController, playerID));
+			ses.scheduleAtFixedRate(new OutputHandlingThread(socket, serverAddress, serverPort, player), 0, 8,
+					TimeUnit.MILLISECONDS);
+			
+			shouldRun = true;
+			loop();
+	
+		}catch(Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+		
 	}
 
 	public void draw() {
-		background(0);
-
-		playerController.run();
-
-		displayHandler.run();
-		physicsEngine.run();
-	}
-
-	public short byteArrayToShort(byte[] b) {
-		ByteBuffer bb = ByteBuffer.wrap(b);
-		return bb.getShort();
+		if(shouldRun) {
+			background(0);
+			playerController.run();
+			displayHandler.run();
+			physicsEngine.run();
+		}
 	}
 
 	public void keyPressed() {
@@ -152,5 +183,23 @@ public class World extends PApplet {
 		if (key == ' ') {
 			playerController.stopShooting();
 		}
+	}
+
+	public void shutdown() {
+		shouldRun = false;
+		noLoop();
+		executor.shutdown();
+		ses.shutdown();
+		try {
+			if (!executor.awaitTermination(800, TimeUnit.MILLISECONDS)
+					|| !ses.awaitTermination(800, TimeUnit.MILLISECONDS)) {
+				executor.shutdownNow();
+				ses.shutdownNow();
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		frame.setVisible(false);
+		lobby.setVisible(true);
 	}
 }

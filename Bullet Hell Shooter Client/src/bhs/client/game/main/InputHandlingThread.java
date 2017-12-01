@@ -39,7 +39,7 @@ public class InputHandlingThread implements Runnable {
 				packet = new DatagramPacket(buf, buf.length);
 				socket.receive(packet);
 
-				System.out.println("Received packet");
+				//System.out.println("Received packet");
 				bais = new ByteArrayInputStream(packet.getData());
 				is = new ObjectInputStream(bais);
 
@@ -54,7 +54,6 @@ public class InputHandlingThread implements Runnable {
 				}
 				dataController.updateData(temp);
 				System.out.println("data received and cloned");
-
 				is.close();
 			} catch (Exception e) {
 				e.printStackTrace();

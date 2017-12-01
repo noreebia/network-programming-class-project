@@ -50,9 +50,10 @@ public class OutputHandlingThread implements Runnable {
 
 			packet = new DatagramPacket(buf, buf.length, serverAddress, serverPort);
 			
+			/*
 			System.out.println("Number of bullets: " + player.getBullets().size());
 			System.out.println("Length of sent data in bytes: " + buf.length);
-
+			*/
 			try {
 				socket.send(packet);
 			} catch (IOException e) {
@@ -60,6 +61,7 @@ public class OutputHandlingThread implements Runnable {
 			}
 			
 			System.out.println("Sent");
+			System.out.println("Player ID: " + player.getID());
 			if(player.getHitEnemies().size() > 0) {
 				player.getHitEnemies().clear();
 			}

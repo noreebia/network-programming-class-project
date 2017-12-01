@@ -56,4 +56,14 @@ public class DataController {
 	public boolean hasLevelChanged() {
 		return levelChanged;
 	}
+	
+	public int getAlivePlayers() {
+		int alivePlayers=0;
+		for(Player p: data.players) {
+			if(p.isAlive()) {
+				alivePlayers++;
+			}
+		}
+		return alivePlayers;
+	}
 }

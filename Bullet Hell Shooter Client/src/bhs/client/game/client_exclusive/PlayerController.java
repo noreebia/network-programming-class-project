@@ -30,11 +30,14 @@ public class PlayerController {
 	long timeOfHit;
 	int colorFlashCount;
 	short[] backupRGB;
+	
+	short playerID;
 
-	public PlayerController(PApplet world, Player player, String username) {
+	public PlayerController(PApplet world, Player player, String username, short playerID) {
 		this.world = world;
 		this.player = player;
 		this.username = username;
+		this.playerID = playerID;
 	}
 	
 	public void initializePlayer() {
@@ -48,6 +51,7 @@ public class PlayerController {
 		player.setBullets(bulletSystem.getBullets());
 		player.setHP((short) 3);
 		player.setAlive(true);
+		player.setID(playerID);
 	}
 	
 	public void run() {

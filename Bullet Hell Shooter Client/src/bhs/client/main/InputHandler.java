@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JTextArea;
 
@@ -22,8 +23,9 @@ public class InputHandler extends Thread{
 	JList roomListBox;
 	String username;
 	DefaultListModel<String> listModel = new DefaultListModel<>();
+	World world;
 
-	public InputHandler(Socket socket, JTextArea chatbox, JList roomListBox, String username) {
+	public InputHandler(Socket socket, JTextArea chatbox, JList roomListBox, String username, JFrame lobby) {
 		this.socket = socket;
 		this.chatbox = chatbox;
 		this.roomListBox = roomListBox;
@@ -34,13 +36,15 @@ public class InputHandler extends Thread{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		world = new World(username, lobby);
+		
+		String[] sketchArgs = {""};
+		PApplet.runSketch(sketchArgs, world);
 	}
 	
 	public void run() {
-		World world;
 		String messageContents;
 		Message message = null;
-		String[] sketchArgs = {"Game"};
 		while(shouldRun()) {
 			try {
 				message = (Message) ois.readObject();
@@ -60,8 +64,8 @@ public class InputHandler extends Thread{
 			case "create game response":
 				System.out.println("received response to 'host game' button click");
 				int roomPort = (int) message.getData();
-				world = new World(socket.getInetAddress().getHostAddress(), roomPort, 0, username);
-				PApplet.runSketch(sketchArgs, world);
+				world.setConnection(socket.getInetAddress().getHostAddress(), roomPort, 0);
+				world.initializeWorld();
 				break;
 			case "refresh room list response":
 				ArrayList<String> roomList = (ArrayList<String>) message.getData();
@@ -71,8 +75,10 @@ public class InputHandler extends Thread{
 				break;
 			case "join game response":
 				int[] roomInfo = (int[]) message.getData();
-				world = new World(socket.getInetAddress().getHostAddress(), roomInfo[0], roomInfo[1], username);
-				PApplet.runSketch(sketchArgs, world);
+				//world = new World(socket.getInetAddress().getHostAddress(), roomInfo[0], roomInfo[1], username);
+				//PApplet.runSketch(sketchArgs, world);
+				world.setConnection(socket.getInetAddress().getHostAddress(), roomInfo[0], roomInfo[1]);
+				world.initializeWorld();
 				break;
 			}
 		}
