@@ -33,18 +33,18 @@ public class PlayerController {
 	
 	short playerID;
 
-	public PlayerController(PApplet world, Player player, String username, short playerID) {
+	public PlayerController(PApplet world, Player player, String username, short playerID, int[] playerColor) {
 		this.world = world;
 		this.player = player;
 		this.username = username;
 		this.playerID = playerID;
+		player.setRGB((short)playerColor[0], (short)playerColor[1], (short)playerColor[2]);
 	}
 	
 	public void initializePlayer() {
 		player.setUsername(username);
 		player.setX(world.width/2);
 		player.setY(world.height/2);
-		player.setRGB((short)0, (short)255, (short)255);
 		
 		backupRGB = player.getRGB().clone();
 		bulletSystem = new BulletSystem(world, player, backupRGB);		

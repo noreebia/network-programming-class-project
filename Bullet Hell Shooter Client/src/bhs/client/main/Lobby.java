@@ -37,7 +37,7 @@ public class Lobby extends javax.swing.JFrame {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		inputHandler = new InputHandler(socket, jTextArea1, jList1, username, this);
+		inputHandler = new InputHandler(socket, jTextArea1, jList1, username, this, jPanel23);
 		inputHandler.start();
 		sendRefreshmentRequest();
 	}

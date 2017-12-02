@@ -30,7 +30,6 @@ public class Room {
 	
 	CopyOnWriteArrayList<Client> clients = new CopyOnWriteArrayList<Client>();
 	
-	
 	short connectionCount=0;
 	
 	int id;
@@ -40,6 +39,8 @@ public class Room {
 	ScheduledExecutorService ses = Executors.newScheduledThreadPool(3);
 	
 	AtomicInteger uniquePlayerID = new AtomicInteger();
+	
+	String state = "Joinable";
 	
 	public Room(int id) {
 		this.id = id;
@@ -109,5 +110,17 @@ public class Room {
 	
 	public int getUniquePlayerID() {
 		return uniquePlayerID.getAndIncrement();
+	}
+	
+	public int getPlayerCount() {
+		return clients.size();
+	}
+	
+	public void setState(String state) {
+		this.state = state;
+	}
+	
+	public String getState() {
+		return state;
 	}
 }

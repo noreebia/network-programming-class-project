@@ -25,6 +25,7 @@ public class InputHandlingThread implements Runnable {
 	DataController dataController;
 
 	short connectionID;
+	boolean run = true;
 
 	public InputHandlingThread(DatagramSocket socket, DataController dataController, short connectionID) {
 		System.out.println("Input handler created.");
@@ -34,7 +35,7 @@ public class InputHandlingThread implements Runnable {
 	}
 
 	public void run() {
-		while (true) {
+		while (shouldRun()) {
 			try {
 				packet = new DatagramPacket(buf, buf.length);
 				socket.receive(packet);
@@ -59,5 +60,13 @@ public class InputHandlingThread implements Runnable {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public boolean shouldRun() {
+		return run;
+	}
+	
+	public void terminate() {
+		run = false;
 	}
 }

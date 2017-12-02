@@ -207,4 +207,8 @@ public class DisplayHandler {
 					world.height / 2 - 35);
 		}
 	}
+	
+	public void displayExitButton() {
+		
+	}
 }

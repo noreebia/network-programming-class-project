@@ -44,6 +44,9 @@ public class World extends PApplet {
 	ExecutorService executor;
 	ScheduledExecutorService ses;
 
+	InputHandlingThread inputHandlingThread;
+	OutputHandlingThread outputHandlingThread;
+	
 	JFrame lobby;
 	Frame frame;
 
@@ -74,7 +77,7 @@ public class World extends PApplet {
 		noLoop();
 	}
 
-	public void setConnection(String serverIP, int serverPort, int playerID) {
+	public void setServerInfo(String serverIP, int serverPort, int playerID) {
 		System.out.println("initializing world");
 		try {
 			serverAddress = InetAddress.getByName(serverIP);
@@ -84,14 +87,11 @@ public class World extends PApplet {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		/*
-		 * player.setID((short) playerID); connectionID = (short) playerID;
-		 */
 		this.playerID = (short) playerID;
 		System.out.println(playerID);
 	}
 
-	public void initializeWorld() {
+	public void reset(int[] playerColor) {
 		try {
 			frame.setVisible(true);
 			lobby.setVisible(false);
@@ -100,17 +100,19 @@ public class World extends PApplet {
 			ses = Executors.newScheduledThreadPool(2);
 
 			player = new Player();
-			playerController = new PlayerController(this, player, username, playerID);
+			playerController = new PlayerController(this, player, username, playerID, playerColor);
 			playerController.initializePlayer();
 
 			dataController = new DataController();
+			
+			inputHandlingThread = new InputHandlingThread(socket, dataController, playerID);
+			outputHandlingThread = new OutputHandlingThread(socket, serverAddress, serverPort, player);
 
 			displayHandler = new DisplayHandler(this, playerID, dataController, player);
 			physicsEngine = new PhysicsEngine(dataController, player, playerController);
 
-			executor.execute(new InputHandlingThread(socket, dataController, playerID));
-			ses.scheduleAtFixedRate(new OutputHandlingThread(socket, serverAddress, serverPort, player), 0, 8,
-					TimeUnit.MILLISECONDS);
+			executor.execute(inputHandlingThread);
+			ses.scheduleAtFixedRate(outputHandlingThread,0,8,TimeUnit.MILLISECONDS);
 
 			shouldRun = true;
 			loop();
@@ -196,6 +198,7 @@ public class World extends PApplet {
 	public void shutdown() {
 		shouldRun = false;
 		noLoop();
+		inputHandlingThread.terminate();
 		executor.shutdown();
 		ses.shutdown();
 		try {
@@ -207,6 +210,7 @@ public class World extends PApplet {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		socket.close();
 		frame.setVisible(false);
 		lobby.setVisible(true);
 	}

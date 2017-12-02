@@ -96,6 +96,7 @@ public class ClientHandler extends Thread {
 				*/
 				int newRoomID = createRoom();
 				sendRoomInfo(newRoomID);
+				refreshEveryClient();
 				break;
 			case "join game":
 				int roomID = (int) incomingMessage.getData();
@@ -145,7 +146,7 @@ public class ClientHandler extends Thread {
 	public void refreshEveryClient() {
 		ArrayList<String> listOfRooms= new ArrayList<String>();
 		for(Room r:rooms) {
-			listOfRooms.add("Room " + r.getID());
+			listOfRooms.add("Room " + r.getID()+"    " + r.getPlayerCount() + "/4" + "    " + r.getState());
 		}
 		Message message = new Message("refresh room list response", listOfRooms);
 		sendToAllClients(message);

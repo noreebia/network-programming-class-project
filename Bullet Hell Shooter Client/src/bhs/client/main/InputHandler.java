@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
 import bhs.client.game.main.World;
@@ -24,12 +25,14 @@ public class InputHandler extends Thread{
 	String username;
 	DefaultListModel<String> listModel = new DefaultListModel<>();
 	World world;
+	PanelWithDrawing avatarPanel;
 
-	public InputHandler(Socket socket, JTextArea chatbox, JList roomListBox, String username, JFrame lobby) {
+	public InputHandler(Socket socket, JTextArea chatbox, JList roomListBox, String username, JFrame lobby, PanelWithDrawing avatarPanel) {
 		this.socket = socket;
 		this.chatbox = chatbox;
 		this.roomListBox = roomListBox;
 		this.username = username;
+		this.avatarPanel = avatarPanel;
 		roomListBox.setModel(listModel);
 		try {
 			ois = new ObjectInputStream(socket.getInputStream());
@@ -70,10 +73,11 @@ public class InputHandler extends Thread{
 				break;
 			case "join game response":
 				int[] roomInfo = (int[]) message.getData();
+				int[] avatarColor = {avatarPanel.getBackground().getRed(), avatarPanel.getBackground().getGreen(),avatarPanel.getBackground().getBlue()};
 				//world = new World(socket.getInetAddress().getHostAddress(), roomInfo[0], roomInfo[1], username);
 				//PApplet.runSketch(sketchArgs, world);
-				world.setConnection(socket.getInetAddress().getHostAddress(), roomInfo[0], roomInfo[1]);
-				world.initializeWorld();
+				world.setServerInfo(socket.getInetAddress().getHostAddress(), roomInfo[0], roomInfo[1]);
+				world.reset(avatarPanel.getAvatarColor());
 				break;
 			}
 		}
