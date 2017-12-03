@@ -71,8 +71,6 @@ public class InputHandler extends Thread{
 			case "join game response":
 				int[] roomInfo = (int[]) message.getData();
 				int[] avatarColor = {avatarPanel.getBackground().getRed(), avatarPanel.getBackground().getGreen(),avatarPanel.getBackground().getBlue()};
-				//world = new World(socket.getInetAddress().getHostAddress(), roomInfo[0], roomInfo[1], username);
-				//PApplet.runSketch(sketchArgs, world);
 				world.setServerInfo(socket.getInetAddress().getHostAddress(), roomInfo[0], roomInfo[1]);
 				world.reset(avatarPanel.getAvatarColor());
 				break;

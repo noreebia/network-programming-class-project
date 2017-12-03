@@ -74,7 +74,9 @@ public class ClientHandler extends Thread {
 				break;
 			} catch (Exception e) {
 				e.printStackTrace();
+				terminate();
 				System.exit(1);
+				break;
 			}
 			if (incomingMessage == null) {
 				terminate();
@@ -92,13 +94,6 @@ public class ClientHandler extends Thread {
 				sendToAllClients(outgoingMessage);
 				break;
 			case "create game":
-				/*
-				 * int newRoomID = uniqueRoomID.getAndIncrement(); Room newRoom = new
-				 * Room(newRoomID); int newRoomPort = newRoom.getPort(); rooms.add(newRoom);
-				 * outgoingMessage = new Message("create game response", newRoomPort); try {
-				 * oos.writeObject(outgoingMessage); } catch (IOException e) {
-				 * e.printStackTrace(); } refreshEveryClient();
-				 */
 				int newRoomID = createRoom();
 				sendRoomInfo(newRoomID);
 				refreshEveryClient();
@@ -106,11 +101,6 @@ public class ClientHandler extends Thread {
 			case "join game":
 				int roomID = (int) incomingMessage.getData();
 				sendRoomInfo(roomID);
-				/*
-				 * for(Room r:rooms) { if(r.getID() == roomID) { int[] roomInfo = {r.getPort(),
-				 * r.getUniquePlayerID()}; outgoingMessage = new Message("join game response",
-				 * roomInfo); sendToClient(outgoingMessage); break; } }
-				 */
 				break;
 			case "refresh room list":
 				refreshEveryClient();

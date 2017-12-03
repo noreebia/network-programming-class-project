@@ -202,7 +202,9 @@ public class DisplayHandler {
 		widthOfString = world.textWidth("PLAYERS ALIVE: " + alivePlayers);
 		world.text("PLAYERS ALIVE: " + alivePlayers, textOffset, textOffset);
 		if(alivePlayers <= 0) {
-			hasGameEnded = true;
+			if(!user.isAlive()) {
+				hasGameEnded = true;
+			}
 		}
 	}
 
@@ -224,12 +226,14 @@ public class DisplayHandler {
 		world.fill(0,0,0, 128);
 		world.rect(0,0, world.width, world.height);
 		
+		world.fill(255);
 		world.textSize(70);
 		float widthOfString = world.textWidth("END OF GAME");
-		world.text("END OF GAME", world.width/2 - widthOfString/2, world.height-30);
+		world.text("END OF GAME", world.width/2 - widthOfString/2, world.height/2-35);
 	}
 	
 	public void displayExitButton() {
+		world.textSize(26);
 		world.stroke(0,128,255);
 		if(world.mouseX >= world.width-120 && world.mouseY >= world.height - 70 && world.mouseX <= world.width -20 && world.mouseY <= world.height-20) {
 			world.fill(153, 204, 255);
