@@ -47,6 +47,7 @@ public class DisplayHandler {
 		runParticleSystems();
 		displayGameStats();
 		displayLevelChange();
+		displayExitButton();
 	}
 
 	public void drawExplosions() {
@@ -209,6 +210,16 @@ public class DisplayHandler {
 	}
 	
 	public void displayExitButton() {
+		world.stroke(0,128,255);
+		if(world.mouseX >= world.width-120 && world.mouseY >= world.height - 70 && world.mouseX <= world.width -20 && world.mouseY <= world.height-20) {
+			world.fill(153, 204, 255);
+		}else {
+			world.fill(0);
+		}
+		world.rect(world.width-120, world.height-70, 100, 50);
 		
+		world.fill(0,128,255);
+		float widthOfString = world.textWidth("EXIT");
+		world.text("EXIT", world.width - 120 + widthOfString/2, world.height-45);
 	}
 }

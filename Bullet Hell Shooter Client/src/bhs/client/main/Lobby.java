@@ -18,7 +18,6 @@ import protocol.Message;
  * @author noreebia
  */
 public class Lobby extends javax.swing.JFrame {
-
 	Socket socket;
 	String username;
 	ObjectOutputStream oos;
@@ -638,7 +637,7 @@ public class Lobby extends javax.swing.JFrame {
 	private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
 		System.out.println(jList1.getSelectedValue());
 		String selectedValue = jList1.getSelectedValue();
-		String roomIDString = selectedValue.substring(5, selectedValue.length()).trim();
+		String roomIDString = selectedValue.substring(5, 9).trim();
 		System.out.println(roomIDString);
 		int roomID = Integer.parseInt(roomIDString);
 		Message message = new Message("join game", roomID);

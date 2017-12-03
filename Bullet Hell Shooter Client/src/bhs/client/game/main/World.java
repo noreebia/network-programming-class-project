@@ -52,8 +52,6 @@ public class World extends PApplet {
 
 	String username;
 
-	ControlP5 cp5;
-
 	boolean shouldRun = false;
 
 	public World(String username, JFrame lobby) {
@@ -68,9 +66,6 @@ public class World extends PApplet {
 	public void setup() {
 		strokeWeight((float) 1.5);
 		stroke(255);
-		cp5 = new ControlP5(this);
-		cp5.addBang("shutdown").setCaptionLabel("EXIT").setPosition(width - 120, height - 60).setSize(100, 40)
-				.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
 		frame = ((SmoothCanvas) ((PSurfaceAWT) surface).getNative()).getFrame();
 		frame.setVisible(false);
@@ -194,7 +189,13 @@ public class World extends PApplet {
 			playerController.stopShooting();
 		}
 	}
-
+	
+	public void mousePressed() {
+		if(mouseX >= width-120 && mouseY >= height - 70 && mouseX <= width -20 && mouseY <= height-20) {
+			shutdown();
+		}
+	}
+	
 	public void shutdown() {
 		shouldRun = false;
 		noLoop();
