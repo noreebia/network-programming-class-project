@@ -120,7 +120,6 @@ public class World extends PApplet {
 
 	public void draw() {
 		if (shouldRun) {
-			background(0);
 			playerController.run();
 			playerController.getBulletSystem().run();
 			displayHandler.run();
@@ -199,6 +198,7 @@ public class World extends PApplet {
 	public void shutdown() {
 		shouldRun = false;
 		noLoop();
+		background(0);
 		inputHandlingThread.terminate();
 		executor.shutdown();
 		ses.shutdown();

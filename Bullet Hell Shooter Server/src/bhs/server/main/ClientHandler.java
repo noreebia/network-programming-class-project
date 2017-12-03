@@ -25,18 +25,29 @@ public class ClientHandler extends Thread {
 
 	ObjectOutputStream oos;
 	ObjectInputStream ois;
-	
+
 	boolean run = true;
 
-	public ClientHandler(Client client, CopyOnWriteArrayList<Client> clientList, CopyOnWriteArrayList<ClientHandler> clientHandlingThreads, CopyOnWriteArrayList<Room> rooms, AtomicInteger uniqueRoomID) {
+	public ClientHandler(Client client, CopyOnWriteArrayList<Client> clientList,
+			CopyOnWriteArrayList<ClientHandler> clientHandlingThreads, CopyOnWriteArrayList<Room> rooms,
+			AtomicInteger uniqueRoomID) {
 		this.client = client;
 		this.clientList = clientList;
 		this.clientHandlingThreads = clientHandlingThreads;
 		this.rooms = rooms;
 		this.uniqueRoomID = uniqueRoomID;
+		/*
 		try {
 			oos = new ObjectOutputStream(client.getSocket().getOutputStream());
 			ois = new ObjectInputStream(client.getSocket().getInputStream());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		*/
+		
+		try {
+			oos = client.getOutputStream();
+			ois = client.getInputStream();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -82,18 +93,12 @@ public class ClientHandler extends Thread {
 				break;
 			case "create game":
 				/*
-				int newRoomID = uniqueRoomID.getAndIncrement();
-				Room newRoom = new Room(newRoomID);
-				int newRoomPort = newRoom.getPort();
-				rooms.add(newRoom);
-				outgoingMessage = new Message("create game response", newRoomPort);
-				try {
-					oos.writeObject(outgoingMessage);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				refreshEveryClient();
-				*/
+				 * int newRoomID = uniqueRoomID.getAndIncrement(); Room newRoom = new
+				 * Room(newRoomID); int newRoomPort = newRoom.getPort(); rooms.add(newRoom);
+				 * outgoingMessage = new Message("create game response", newRoomPort); try {
+				 * oos.writeObject(outgoingMessage); } catch (IOException e) {
+				 * e.printStackTrace(); } refreshEveryClient();
+				 */
 				int newRoomID = createRoom();
 				sendRoomInfo(newRoomID);
 				refreshEveryClient();
@@ -102,15 +107,10 @@ public class ClientHandler extends Thread {
 				int roomID = (int) incomingMessage.getData();
 				sendRoomInfo(roomID);
 				/*
-				for(Room r:rooms) {
-					if(r.getID() == roomID) {
-						int[] roomInfo = {r.getPort(), r.getUniquePlayerID()};
-						outgoingMessage = new Message("join game response", roomInfo);
-						sendToClient(outgoingMessage);
-						break;
-					}
-				}
-				*/
+				 * for(Room r:rooms) { if(r.getID() == roomID) { int[] roomInfo = {r.getPort(),
+				 * r.getUniquePlayerID()}; outgoingMessage = new Message("join game response",
+				 * roomInfo); sendToClient(outgoingMessage); break; } }
+				 */
 				break;
 			case "refresh room list":
 				refreshEveryClient();
@@ -122,7 +122,7 @@ public class ClientHandler extends Thread {
 		removeSelfFromArray();
 		return;
 	}
-	
+
 	public int createRoom() {
 		int newRoomID = uniqueRoomID.getAndIncrement();
 		Room newRoom = new Room(newRoomID);
@@ -130,28 +130,28 @@ public class ClientHandler extends Thread {
 		rooms.add(newRoom);
 		return newRoomID;
 	}
-	
+
 	public void sendRoomInfo(int roomID) {
 		Message message;
-		for(Room r:rooms) {
-			if(r.getID() == roomID) {
-				int[] roomInfo = {r.getPort(), r.getUniquePlayerID()};
+		for (Room r : rooms) {
+			if (r.getID() == roomID) {
+				int[] roomInfo = { r.getPort(), r.getUniquePlayerID() };
 				message = new Message("join game response", roomInfo);
 				sendToClient(message);
 				break;
 			}
 		}
 	}
-	
+
 	public void refreshEveryClient() {
-		ArrayList<String> listOfRooms= new ArrayList<String>();
-		for(Room r:rooms) {
-			listOfRooms.add("Room " + r.getID()+"    " + r.getPlayerCount() + "/4" + "    " + r.getState());
+		ArrayList<String> listOfRooms = new ArrayList<String>();
+		for (Room r : rooms) {
+			listOfRooms.add("Room " + r.getID() + "    " + r.getPlayerCount() + "/4" + "    " + r.getState());
 		}
 		Message message = new Message("refresh room list response", listOfRooms);
 		sendToAllClients(message);
 	}
-	
+
 	public void sendToClient(Message message) {
 		try {
 			oos.writeObject(message);
@@ -159,9 +159,9 @@ public class ClientHandler extends Thread {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void sendToAllClients(Message message) {
-		for(ClientHandler ch: clientHandlingThreads) {
+		for (ClientHandler ch : clientHandlingThreads) {
 			ch.sendToClient(message);
 		}
 	}
@@ -169,15 +169,15 @@ public class ClientHandler extends Thread {
 	public void disconnectClient() {
 		clientList.remove(client);
 	}
-	
+
 	public boolean shouldRun() {
 		return run;
 	}
-	
+
 	public void removeSelfFromArray() {
 		clientHandlingThreads.remove(this);
 	}
-	
+
 	public void terminate() {
 		this.run = false;
 	}

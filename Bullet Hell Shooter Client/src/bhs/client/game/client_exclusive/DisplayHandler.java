@@ -13,7 +13,7 @@ public class DisplayHandler {
 	short connectionID;
 	DataController dataController;
 
-	int numberOfParticleSystems = 15;
+	int numberOfParticleSystems = 20;
 	ParticleSystem particleSystems[] = new ParticleSystem[numberOfParticleSystems];
 
 	long timeOfLevelChange;
@@ -24,6 +24,8 @@ public class DisplayHandler {
 
 	Player user;
 	PFont font;
+	
+	boolean hasGameEnded = false;
 
 	public DisplayHandler(PApplet world, short connectionID, DataController dataController, Player user) {
 		this.world = world;
@@ -40,6 +42,7 @@ public class DisplayHandler {
 	}
 
 	public void run() {
+		drawBackground();
 		drawUser();
 		drawPlayersAndBullets();
 		drawEnemies();
@@ -47,7 +50,14 @@ public class DisplayHandler {
 		runParticleSystems();
 		displayGameStats();
 		displayLevelChange();
+		if(hasGameEnded) {
+			notifyEndOfGame();
+		}
 		displayExitButton();
+	}
+	
+	public void drawBackground() {
+		world.background(0);
 	}
 
 	public void drawExplosions() {
@@ -192,7 +202,7 @@ public class DisplayHandler {
 		widthOfString = world.textWidth("PLAYERS ALIVE: " + alivePlayers);
 		world.text("PLAYERS ALIVE: " + alivePlayers, textOffset, textOffset);
 		if(alivePlayers <= 0) {
-			
+			hasGameEnded = true;
 		}
 	}
 
@@ -200,6 +210,7 @@ public class DisplayHandler {
 		if (dataController.hasLevelChanged()) {
 			dataController.setLevelChanged(false);
 			timeOfLevelChange = System.currentTimeMillis();
+			user.setHP((short)3);
 		} else if (System.currentTimeMillis() - timeOfLevelChange <= durationOfLevelChangeDisplay) {
 			world.fill(255);
 			world.textSize(70);
@@ -207,6 +218,15 @@ public class DisplayHandler {
 			world.text("LEVEL " + dataController.getLevel(), world.width / 2 - widthOfString / 2,
 					world.height / 2 - 35);
 		}
+	}
+	
+	public void notifyEndOfGame() {
+		world.fill(0,0,0, 128);
+		world.rect(0,0, world.width, world.height);
+		
+		world.textSize(70);
+		float widthOfString = world.textWidth("END OF GAME");
+		world.text("END OF GAME", world.width/2 - widthOfString/2, world.height-30);
 	}
 	
 	public void displayExitButton() {

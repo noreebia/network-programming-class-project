@@ -2,6 +2,7 @@ package bhs.client.main;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.StreamCorruptedException;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -27,18 +28,14 @@ public class InputHandler extends Thread{
 	World world;
 	PanelWithDrawing avatarPanel;
 
-	public InputHandler(Socket socket, JTextArea chatbox, JList roomListBox, String username, JFrame lobby, PanelWithDrawing avatarPanel) {
+	public InputHandler(Socket socket, ObjectInputStream ois, JTextArea chatbox, JList roomListBox, String username, JFrame lobby, PanelWithDrawing avatarPanel) {
 		this.socket = socket;
 		this.chatbox = chatbox;
 		this.roomListBox = roomListBox;
 		this.username = username;
 		this.avatarPanel = avatarPanel;
+		this.ois = ois;
 		roomListBox.setModel(listModel);
-		try {
-			ois = new ObjectInputStream(socket.getInputStream());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		world = new World(username, lobby);
 		
 		String[] sketchArgs = {""};
@@ -59,7 +56,7 @@ public class InputHandler extends Thread{
 			}
 			
 			messageContents = message.getContents();
-			switch(messageContents) {
+			switch(messageContents) {				
 			case "chatboxUpdate":
 				String messageData = (String) message.getData();
 				chatbox.append(messageData);

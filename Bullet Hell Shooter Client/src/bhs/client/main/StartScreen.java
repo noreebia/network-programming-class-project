@@ -3,9 +3,13 @@ package bhs.client.main;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+
+import protocol.Message;
 
 public class StartScreen extends javax.swing.JFrame {
 
@@ -206,14 +210,19 @@ public class StartScreen extends javax.swing.JFrame {
 
 	private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
 		Socket socket = null;
-		PrintWriter output = null;
-		BufferedReader input = null;
+		
+		ObjectOutputStream oos = null;
+		ObjectInputStream ois = null;
+		
+		Message outgoingMessage;
+		Message incomingMessage = null;
 
 		String serverResponse = null;
 		try {
 			socket = new Socket(jTextField3.getText(), Integer.parseInt(jTextField4.getText()));
-			output = new PrintWriter(socket.getOutputStream(), true);
-			input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			
+			oos = new ObjectOutputStream(socket.getOutputStream());
+			ois = new ObjectInputStream(socket.getInputStream());
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -226,17 +235,24 @@ public class StartScreen extends javax.swing.JFrame {
 			System.exit(1);
 		}
 
-		output.println(jTextField1.getText());
+		outgoingMessage = new Message(null, jTextField1.getText());
 		try {
-			serverResponse = input.readLine();
+			oos.writeObject(outgoingMessage);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		try {
+			incomingMessage = (Message)ois.readObject();
+		} catch (ClassNotFoundException | IOException e) {
+			e.printStackTrace();
+		}
+		serverResponse = (String) incomingMessage.getData();
 
 		if (serverResponse.equals("duplicate")) {
 			System.out.println("Duplicate nickname. Choose another nickname.");
-		} else if (serverResponse.equals("connected")) {
-			Lobby lobby = new Lobby(socket, jTextField1.getText(), jTextField3.getText());
+		} else if (serverResponse.equals("accepted")) {
+			Lobby lobby = new Lobby(socket, oos, ois, jTextField1.getText(), jTextField3.getText());
 			lobby.setVisible(true);
 			this.dispose();
 		}

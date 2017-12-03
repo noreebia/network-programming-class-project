@@ -8,6 +8,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import bhs.server.game.main.Room;
+import protocol.Message;
 
 public class Server {
 	CopyOnWriteArrayList<Client> clients = new CopyOnWriteArrayList<Client>();
@@ -15,10 +16,13 @@ public class Server {
 
 	CopyOnWriteArrayList<ClientHandler> clientHandlingThreads = new CopyOnWriteArrayList<ClientHandler>();
 	ServerSocket serverSocket;
-
-	BufferedReader input;
-	PrintWriter output;
 	
+	ObjectOutputStream oos;
+	ObjectInputStream ois;
+	
+	Message incomingMessage;
+	Message outgoingMessage;
+
 	AtomicInteger uniqueRoomID = new AtomicInteger();
 
 	public Server() throws IOException {
@@ -30,18 +34,26 @@ public class Server {
 			System.out.println("Listening for clients...");
 			
 			Socket socket = serverSocket.accept();
-			input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			output = new PrintWriter(socket.getOutputStream(), true);
-
-			userChosenNickname = input.readLine();
+			
+			oos = new ObjectOutputStream(socket.getOutputStream());
+			ois = new ObjectInputStream(socket.getInputStream());
+						
+			try {
+				incomingMessage = (Message)ois.readObject();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+			userChosenNickname = (String) incomingMessage.getData();
 
 			if (isDuplicateNickname(userChosenNickname)) {
-				output.println("duplicate");
+				outgoingMessage = new Message("login response", "duplicate");
+				
 				System.out.println("duplicate nickname");
 			} else {				
-				output.println("connected");
+				outgoingMessage = new Message(null, "accepted");
 
-				Client connectedClient = new Client(socket, userChosenNickname);
+				Client connectedClient = new Client(socket, oos, ois, userChosenNickname);
 				clients.add(connectedClient);
 				
 				ClientHandler clientHandler = new ClientHandler(connectedClient, clients, clientHandlingThreads, rooms, uniqueRoomID);
@@ -49,12 +61,9 @@ public class Server {
 				clientHandlingThreads.add(clientHandler);
 				
 				System.out.println("success");
-				//Thread clientHandler = new Thread(new ClientHandler(connectedClient));
-				//new Thread(new ClientHandler(connectedClient)).start();
-				//clientHandler.start();
-				//clientHandlingThreads.add(clientHandler);
-				//output.println("connected");
 			}
+			oos.writeObject(outgoingMessage);
+
 			System.out.println("current connected clients: " + clients.size());
 			System.out.println("Current client handling threads: " + clientHandlingThreads.size());
 		}

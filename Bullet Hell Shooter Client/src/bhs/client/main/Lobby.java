@@ -6,6 +6,7 @@
 package bhs.client.main;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.DatagramSocket;
 import java.net.Socket;
@@ -21,22 +22,20 @@ public class Lobby extends javax.swing.JFrame {
 	Socket socket;
 	String username;
 	ObjectOutputStream oos;
+	ObjectInputStream ois;
 	InputHandler inputHandler;
 
 	/**
 	 * Creates new form Lobby
 	 */
-	public Lobby(Socket socket, String username, String serverIP) {
+	public Lobby(Socket socket, ObjectOutputStream oos, ObjectInputStream ois, String username, String serverIP) {
 		this.username = username;
 		initComponents();
 		jRadioButton7.setSelected(true);
 		this.socket = socket;
-		try {
-			oos = new ObjectOutputStream(socket.getOutputStream());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		inputHandler = new InputHandler(socket, jTextArea1, jList1, username, this, jPanel23);
+		this.oos = oos;
+		this.ois = ois;
+		inputHandler = new InputHandler(socket, ois, jTextArea1, jList1, username, this, jPanel23);
 		inputHandler.start();
 		sendRefreshmentRequest();
 	}
