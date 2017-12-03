@@ -636,14 +636,16 @@ public class Lobby extends javax.swing.JFrame {
 	private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
 		System.out.println(jList1.getSelectedValue());
 		String selectedValue = jList1.getSelectedValue();
-		String roomIDString = selectedValue.substring(5, 9).trim();
-		System.out.println(roomIDString);
-		int roomID = Integer.parseInt(roomIDString);
-		Message message = new Message("join game", roomID);
-		try {
-			oos.writeObject(message);
-		} catch (IOException e) {
-			e.printStackTrace();
+		if(selectedValue != null && !selectedValue.isEmpty()) {
+			String roomIDString = selectedValue.substring(5, 9).trim();
+			System.out.println(roomIDString);
+			int roomID = Integer.parseInt(roomIDString);
+			Message message = new Message("join game", roomID);
+			try {
+				oos.writeObject(message);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

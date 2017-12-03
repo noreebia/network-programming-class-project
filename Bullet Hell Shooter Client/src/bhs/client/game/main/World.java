@@ -1,7 +1,6 @@
 package bhs.client.game.main;
 
 import java.io.ByteArrayOutputStream;
-import controlP5.*;
 import java.io.IOException;
 import java.awt.Frame;
 import java.io.*;
