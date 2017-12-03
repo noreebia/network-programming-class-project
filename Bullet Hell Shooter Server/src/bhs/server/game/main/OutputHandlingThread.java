@@ -16,24 +16,26 @@ public class OutputHandlingThread implements Runnable {
 	ObjectOutputStream os;
 
 	byte[] buf = new byte[8192];
-	DatagramSocket ioSocket;
+	DatagramSocket socket;
 	DatagramPacket packet;
 
 	DataController dataController;
 	CopyOnWriteArrayList<Client> clients;
 
 	EnemySystem enemySystem;
+	
+	Room room;
 
-	public OutputHandlingThread(DatagramSocket ioSocket, DataController dataController,
+	public OutputHandlingThread(Room room, DatagramSocket socket, DataController dataController,
 			CopyOnWriteArrayList<Client> clients, EnemySystem enemySystem) {
 		System.out.println("OutputHandlingThread created");
-		this.ioSocket = ioSocket;
+		this.room = room;
+		this.socket = socket;
 		try {
 			os = new ObjectOutputStream(baos);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		this.clients = clients;
 		this.dataController = dataController;
 		this.enemySystem = enemySystem;
@@ -43,6 +45,9 @@ public class OutputHandlingThread implements Runnable {
 		if (clients.size() > 0) {
 			try {
 				enemySystem.run();
+				if(enemySystem.isEveryPlayerDead()) {
+					room.setState("Finished");
+				}
 
 				try {
 					baos.reset();
@@ -57,7 +62,7 @@ public class OutputHandlingThread implements Runnable {
 					if (System.currentTimeMillis() - c.getLastSentTime() <= 2000) {
 						packet = new DatagramPacket(buf, buf.length, c.getAddress(), c.getPort());
 						try {
-							ioSocket.send(packet);
+							socket.send(packet);
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
@@ -65,6 +70,9 @@ public class OutputHandlingThread implements Runnable {
 					} else {
 						dataController.removePlayer((short) c.getID());
 						clients.remove(c);
+						if(clients.size() <= 0) {
+							room.setState("Dead");
+						}
 					}
 				}
 
@@ -73,6 +81,7 @@ public class OutputHandlingThread implements Runnable {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
+				System.exit(1);
 			}
 		}
 	}

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import java.util.Random;
 
+import bhs.server.game.main.Room;
 import game.protocol.Enemy;
 import game.protocol.GameObject;
 import game.protocol.Player;
@@ -26,7 +27,7 @@ public class EnemySystem {
 	boolean everyEnemyDead;
 
 	Random rand = new Random();
-
+	
 	public EnemySystem(DataController dataController) {
 		this.dataController = dataController;
 	}
@@ -166,5 +167,14 @@ public class EnemySystem {
 	
 	public boolean isEveryEnemyDead() {
 		return everyEnemyDead;
+	}
+	
+	public boolean isEveryPlayerDead() {
+		for(Player p: dataController.getPlayers()) {
+			if(p.isAlive()) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

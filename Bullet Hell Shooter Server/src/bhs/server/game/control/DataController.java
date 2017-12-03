@@ -35,6 +35,7 @@ public class DataController {
 			Player player = iterator.next();
 			if(player.getID() == playerID) {
 				iterator.remove();
+				return;
 			}
 		}
 	}

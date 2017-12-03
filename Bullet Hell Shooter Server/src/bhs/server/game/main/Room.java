@@ -55,7 +55,7 @@ public class Room {
 		System.out.println(socket.getLocalPort());
 		
 		executor.execute(new InputHandlingThread(socket, dataController, enemySystem, clients));
-		ses.scheduleAtFixedRate(new OutputHandlingThread(socket, dataController, clients, enemySystem), 0, 8, TimeUnit.MILLISECONDS);
+		ses.scheduleAtFixedRate(new OutputHandlingThread(this, socket, dataController, clients, enemySystem), 0, 8, TimeUnit.MILLISECONDS);
 	}
 
 	
@@ -71,34 +71,12 @@ public class Room {
 		System.out.println(socket.getLocalPort());
 		
 		executor.execute(new InputHandlingThread(socket, dataController, enemySystem, clients));
-		ses.scheduleAtFixedRate(new OutputHandlingThread(socket, dataController, clients, enemySystem), 0, 8, TimeUnit.MILLISECONDS);
+		ses.scheduleAtFixedRate(new OutputHandlingThread(this, socket, dataController, clients, enemySystem), 0, 8, TimeUnit.MILLISECONDS);
 	}
-	/*
-	public Room(int port) {
-		enemySystem.resetEnemies(10);
 
-		try {
-			this.port = port;
-			socket = new DatagramSocket(port);
-		} catch (SocketException e) {
-			e.printStackTrace();
-		}
-		
-		System.out.println(socket.getLocalPort());
-		
-		executor.execute(new InputHandlingThread(socket, dataController, enemySystem, clients));
-		ses.scheduleAtFixedRate(new OutputHandlingThread(socket, dataController, clients, enemySystem), 0, 8, TimeUnit.MILLISECONDS);
-	}
-	*/
 	public short getConnectionCount() {
 		return connectionCount;
 	}
-	
-	/*
-	public void addClient(short id, InetAddress clientAddress, int clientPort) {
-		clients.add(new Client(id, clientAddress, clientPort));
-	}
-	*/
 	
 	public int getPort() {
 		return socket.getLocalPort();
@@ -122,5 +100,9 @@ public class Room {
 	
 	public String getState() {
 		return state;
+	}
+	
+	public short getCurrentStage() {
+		return dataController.getLevel();
 	}
 }

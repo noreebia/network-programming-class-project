@@ -37,14 +37,11 @@ public class ClientHandler extends Thread {
 		this.rooms = rooms;
 		this.uniqueRoomID = uniqueRoomID;
 		/*
-		try {
-			oos = new ObjectOutputStream(client.getSocket().getOutputStream());
-			ois = new ObjectInputStream(client.getSocket().getInputStream());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		*/
-		
+		 * try { oos = new ObjectOutputStream(client.getSocket().getOutputStream()); ois
+		 * = new ObjectInputStream(client.getSocket().getInputStream()); } catch
+		 * (Exception e) { e.printStackTrace(); }
+		 */
+
 		try {
 			oos = client.getOutputStream();
 			ois = client.getInputStream();
@@ -95,15 +92,15 @@ public class ClientHandler extends Thread {
 				break;
 			case "create game":
 				int newRoomID = createRoom();
-				sendRoomInfo(newRoomID);
+				handleRoomJoinRequest(newRoomID);
 				refreshEveryClient();
 				break;
 			case "join game":
 				int roomID = (int) incomingMessage.getData();
-				sendRoomInfo(roomID);
+				handleRoomJoinRequest(roomID);
 				break;
 			case "refresh room list":
-				refreshEveryClient();
+				refreshClient();
 				break;
 			}
 		}
@@ -121,22 +118,46 @@ public class ClientHandler extends Thread {
 		return newRoomID;
 	}
 
-	public void sendRoomInfo(int roomID) {
+	public void handleRoomJoinRequest(int roomID) {
 		Message message;
 		for (Room r : rooms) {
 			if (r.getID() == roomID) {
-				int[] roomInfo = { r.getPort(), r.getUniquePlayerID() };
-				message = new Message("join game response", roomInfo);
-				sendToClient(message);
+				if (r.getState().equals("Dead") || r.getState().equals("Finished")) {
+					refreshClient();
+				} else {
+					int[] roomInfo = { r.getPort(), r.getUniquePlayerID() };
+					message = new Message("join game response", roomInfo);
+					sendToClient(message);
+					refreshEveryClient();
+				}
 				break;
 			}
 		}
 	}
 
+	public void refreshClient() {
+		ArrayList<String> listOfRooms = new ArrayList<String>();
+		for (Room r : rooms) {
+			if (r.getState().equals("Dead")) {
+				rooms.remove(r);
+			} else {
+				listOfRooms.add("Room " + r.getID() + "     Players:" + r.getPlayerCount() + "/4" + "     Stage: "
+						+ r.getCurrentStage() + "    " + r.getState());
+			}
+		}
+		Message message = new Message("refresh room list response", listOfRooms);
+		sendToClient(message);
+	}
+
 	public void refreshEveryClient() {
 		ArrayList<String> listOfRooms = new ArrayList<String>();
 		for (Room r : rooms) {
-			listOfRooms.add("Room " + r.getID() + "    " + r.getPlayerCount() + "/4" + "    " + r.getState());
+			if (r.getState().equals("Dead")) {
+				rooms.remove(r);
+			} else {
+				listOfRooms.add("Room " + r.getID() + "     Players:" + r.getPlayerCount() + "/4" + "     Stage: "
+						+ r.getCurrentStage() + "    " + r.getState());
+			}
 		}
 		Message message = new Message("refresh room list response", listOfRooms);
 		sendToAllClients(message);

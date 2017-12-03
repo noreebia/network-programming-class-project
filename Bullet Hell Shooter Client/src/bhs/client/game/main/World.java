@@ -121,7 +121,6 @@ public class World extends PApplet {
 	public void draw() {
 		if (shouldRun) {
 			playerController.run();
-			playerController.getBulletSystem().run();
 			displayHandler.run();
 			physicsEngine.run();
 		}

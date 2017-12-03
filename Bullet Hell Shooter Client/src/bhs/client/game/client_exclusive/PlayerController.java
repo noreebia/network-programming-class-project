@@ -61,6 +61,7 @@ public class PlayerController {
 			movePlayer();
 			deactivateInvincibility();
 		}
+		bulletSystem.run();
 	}
 	
 	public void setSpeed() {
@@ -129,6 +130,7 @@ public class PlayerController {
 				player.setHP((short) (player.getHP() - 1));
 				if(player.getHP() <= 0) {
 					player.setAlive(false);
+					stopShooting();
 					return;
 				}else {
 					setPlayerInvicibility(true);
@@ -187,10 +189,6 @@ public class PlayerController {
 	
 	public short getBackupRGB(int i) {
 		return backupRGB[i];
-	}
-	
-	public BulletSystem getBulletSystem() {
-		return bulletSystem;
 	}
 	
 	public boolean isPlayerAlive() {

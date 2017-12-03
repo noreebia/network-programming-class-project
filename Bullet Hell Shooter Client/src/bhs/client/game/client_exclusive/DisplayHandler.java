@@ -212,6 +212,7 @@ public class DisplayHandler {
 		if (dataController.hasLevelChanged()) {
 			dataController.setLevelChanged(false);
 			timeOfLevelChange = System.currentTimeMillis();
+			user.setAlive(true);
 			user.setHP((short)3);
 		} else if (System.currentTimeMillis() - timeOfLevelChange <= durationOfLevelChangeDisplay) {
 			world.fill(255);
