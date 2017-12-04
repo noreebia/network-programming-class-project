@@ -35,6 +35,9 @@ public class Room {
 	int id;
 	int port;
 	
+	InputHandlingThread inputHandlingThread;
+	OutputHandlingThread outputHandlingThread;
+	
 	ExecutorService executor = Executors.newCachedThreadPool();
 	ScheduledExecutorService ses = Executors.newScheduledThreadPool(3);
 	
@@ -52,13 +55,14 @@ public class Room {
 			e.printStackTrace();
 		}
 		
-		System.out.println(socket.getLocalPort());
+		inputHandlingThread = new InputHandlingThread(socket, dataController, enemySystem, clients);
+		outputHandlingThread = new OutputHandlingThread(this, socket, dataController, clients, enemySystem);
 		
-		executor.execute(new InputHandlingThread(socket, dataController, enemySystem, clients));
-		ses.scheduleAtFixedRate(new OutputHandlingThread(this, socket, dataController, clients, enemySystem), 0, 8, TimeUnit.MILLISECONDS);
+		executor.execute(inputHandlingThread);
+		ses.scheduleAtFixedRate(outputHandlingThread, 0, 8, TimeUnit.MILLISECONDS);
 	}
 
-	
+	/*
 	public Room() {
 		enemySystem.resetEnemies(10);
 
@@ -73,6 +77,7 @@ public class Room {
 		executor.execute(new InputHandlingThread(socket, dataController, enemySystem, clients));
 		ses.scheduleAtFixedRate(new OutputHandlingThread(this, socket, dataController, clients, enemySystem), 0, 8, TimeUnit.MILLISECONDS);
 	}
+	*/
 
 	public short getConnectionCount() {
 		return connectionCount;
@@ -104,5 +109,21 @@ public class Room {
 	
 	public short getCurrentStage() {
 		return dataController.getLevel();
+	}
+	
+	public void shutdown() {
+		inputHandlingThread.terminate();
+		executor.shutdown();
+		ses.shutdown();
+		try {
+			if(!executor.awaitTermination(800, TimeUnit.MILLISECONDS) || !ses.awaitTermination(800, TimeUnit.MILLISECONDS)) {
+				executor.shutdownNow();
+				ses.shutdownNow();
+			}
+		} catch (InterruptedException e) {
+			executor.shutdownNow();
+			ses.shutdownNow();
+		}
+		socket.close();
 	}
 }

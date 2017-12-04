@@ -21,7 +21,7 @@ public class StartScreen extends javax.swing.JFrame {
 	// <editor-fold defaultstate="collapsed" desc="Generated Code">
 	private void initComponents() {
 
-		jPanel2 = new PanelWithImage("data/background_sun.jpg", "middle");
+		jPanel2 = new PanelWithImage("/data/background_sun.jpg", "middle");
 		jPanel1 = new javax.swing.JPanel();
 		jLabel1 = new javax.swing.JLabel();
 		jTextField1 = new javax.swing.JTextField();

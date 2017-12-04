@@ -5,6 +5,7 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.imageio.ImageIO;
 
@@ -17,7 +18,9 @@ public class PanelWithImage extends javax.swing.JPanel{
 		super();
 		try {
 			//backgroundImage = ImageIO.read(new File("data/background_sun.jpg"));
-			backgroundImage = ImageIO.read(new File(fileName));
+			URL url = getClass().getResource(fileName);
+			//backgroundImage = ImageIO.read(new File(fileName));
+			backgroundImage = ImageIO.read(url);
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -29,7 +32,9 @@ public class PanelWithImage extends javax.swing.JPanel{
 		this.desiredImagePart = desiredImagePart;
 		try {
 			//backgroundImage = ImageIO.read(new File("data/background_sun.jpg"));
-			backgroundImage = ImageIO.read(new File(fileName));
+			URL url = getClass().getResource(fileName);
+
+			backgroundImage = ImageIO.read(url);
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(1);

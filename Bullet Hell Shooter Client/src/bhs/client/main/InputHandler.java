@@ -53,6 +53,9 @@ public class InputHandler extends Thread{
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
+			} catch(Exception e) {
+				e.printStackTrace();
+				System.exit(1);
 			}
 			
 			messageContents = message.getContents();

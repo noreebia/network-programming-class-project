@@ -90,7 +90,7 @@ public class Lobby extends javax.swing.JFrame {
 		jPanel23 = new PanelWithDrawing();
 		jLabel4 = new javax.swing.JLabel();
 
-		jPanel27 = new PanelWithImage("data/background_retro2.jpg");
+		jPanel27 = new PanelWithImage("/data/background_retro2.jpg");
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 

@@ -71,6 +71,7 @@ public class OutputHandlingThread implements Runnable {
 						dataController.removePlayer((short) c.getID());
 						clients.remove(c);
 						if(clients.size() <= 0) {
+							room.shutdown();
 							room.setState("Dead");
 						}
 					}

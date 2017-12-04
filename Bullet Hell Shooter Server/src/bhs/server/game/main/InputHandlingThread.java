@@ -13,7 +13,7 @@ import game.protocol.Player;
 
 public class InputHandlingThread implements Runnable {
 
-	DatagramSocket ioSocket;
+	DatagramSocket socket;
 	DatagramPacket packet;
 	byte[] buf = new byte[8192];
 	Player temp;
@@ -26,20 +26,24 @@ public class InputHandlingThread implements Runnable {
 
 	EnemySystem enemySystem;
 
-	public InputHandlingThread(DatagramSocket ioSocket, DataController dataController, EnemySystem enemySystem, CopyOnWriteArrayList<Client> clients) {
+	boolean run = true;
+
+	public InputHandlingThread(DatagramSocket ioSocket, DataController dataController, EnemySystem enemySystem,
+			CopyOnWriteArrayList<Client> clients) {
 		System.out.println("Input handler created.");
-		this.ioSocket = ioSocket;
+		this.socket = ioSocket;
 		this.dataController = dataController;
 		this.enemySystem = enemySystem;
 		this.clients = clients;
 	}
 
 	public void run() {
-		while (true) {
+		while (shouldRun()) {
 			try {
 				System.out.println("Receiving");
 				packet = new DatagramPacket(buf, buf.length);
-				ioSocket.receive(packet);
+
+				socket.receive(packet);
 
 				System.out.println("Received packet");
 				bais = new ByteArrayInputStream(packet.getData());
@@ -55,9 +59,9 @@ public class InputHandlingThread implements Runnable {
 					if (dataController.isNewPlayer()) {
 						addClient(temp.getID(), packet.getAddress(), packet.getPort(), System.currentTimeMillis());
 						System.out.println("new player! new player's id: " + temp.getID());
-					}else {
-						for(Client c: clients) {
-							if(c.getID() == temp.getID()) {
+					} else {
+						for (Client c : clients) {
+							if (c.getID() == temp.getID()) {
 								c.setLastSentTime(System.currentTimeMillis());
 								break;
 							}
@@ -79,22 +83,32 @@ public class InputHandlingThread implements Runnable {
 								enemySystem.getShadows().get(i).getRGB(0), enemySystem.getShadows().get(i).getRGB(1),
 								enemySystem.getShadows().get(i).getRGB(2));
 					}
-					if(temp.isHit()) {
-						dataController.addExplosion(temp.getX(), temp.getY(), temp.getRGB(0), temp.getRGB(1), temp.getRGB(2));
+					if (temp.isHit()) {
+						dataController.addExplosion(temp.getX(), temp.getY(), temp.getRGB(0), temp.getRGB(1),
+								temp.getRGB(2));
 					}
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 					System.exit(1);
 				}
 				is.close();
+			} catch (SocketException e) {
+				terminate();
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.exit(1);
 			}
 		}
 	}
 
 	public void addClient(short id, InetAddress clientAddress, int clientPort, long lastSentTime) {
 		clients.add(new Client(id, clientAddress, clientPort, lastSentTime));
+	}
+
+	public boolean shouldRun() {
+		return run;
+	}
+
+	public void terminate() {
+		run = false;
 	}
 }
