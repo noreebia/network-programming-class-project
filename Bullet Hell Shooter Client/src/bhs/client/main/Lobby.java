@@ -26,6 +26,8 @@ public class Lobby extends javax.swing.JFrame {
 	ObjectOutputStream oos;
 	ObjectInputStream ois;
 	InputHandler inputHandler;
+	
+	volatile boolean pressedExit = false;
 
 	/**
 	 * Creates new form Lobby
@@ -91,11 +93,11 @@ public class Lobby extends javax.swing.JFrame {
 		// jPanel23 = new javax.swing.JPanel();
 		jPanel23 = new PanelWithDrawing();
 		jLabel4 = new javax.swing.JLabel();
-		
-		jTextArea1.setDisabledTextColor(new java.awt.Color(0,0,0));
-		DefaultCaret caret = (DefaultCaret)jTextArea1.getCaret();
+
+		jTextArea1.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+		DefaultCaret caret = (DefaultCaret) jTextArea1.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-		
+
 		jPanel27 = new PanelWithImage("/data/background_retro2.jpg");
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -140,6 +142,11 @@ public class Lobby extends javax.swing.JFrame {
 		jButton6.setForeground(new java.awt.Color(0, 255, 255));
 		jButton6.setText("EXIT TO DESKTOP");
 		jButton6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 255, 255), 3));
+		jButton6.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jButton6ActionPerformed(evt);
+			}
+		});
 
 		jButton7.setBackground(new java.awt.Color(0, 0, 0, 255));
 		jButton7.setForeground(new java.awt.Color(0, 255, 255));
@@ -643,7 +650,7 @@ public class Lobby extends javax.swing.JFrame {
 	private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
 		System.out.println(jList1.getSelectedValue());
 		String selectedValue = jList1.getSelectedValue();
-		if(selectedValue != null && !selectedValue.isEmpty()) {
+		if (selectedValue != null && !selectedValue.isEmpty()) {
 			String roomIDString = selectedValue.substring(5, 9).trim();
 			System.out.println(roomIDString);
 			int roomID = Integer.parseInt(roomIDString);
@@ -660,8 +667,40 @@ public class Lobby extends javax.swing.JFrame {
 		sendRefreshmentRequest();
 	}
 
+	private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {
+		pressedExit = true;
+		Message message = new Message("exit", null);
+		try {
+			oos.writeObject(message);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		//inputHandler.terminate();
+		try {
+			socket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.exit(0);
+	}
+
 	private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:
+		pressedExit = true;
+		Message message = new Message("exit", null);
+		try {
+			oos.writeObject(message);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		//inputHandler.terminate();
+		try {
+			socket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		StartScreen startScreen = new StartScreen();
+		startScreen.setVisible(true);
+		this.dispose();
 	}
 
 	private void jButton7MouseEntered(java.awt.event.MouseEvent evt) {
@@ -727,6 +766,11 @@ public class Lobby extends javax.swing.JFrame {
 			e.printStackTrace();
 		}
 	}
+	
+	public boolean hasPressedExit() {
+		return pressedExit;
+	}
+	
 
 	/**
 	 * @param args

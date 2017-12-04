@@ -213,4 +213,8 @@ public class World extends PApplet {
 		frame.setVisible(false);
 		lobby.setVisible(true);
 	}
+	
+	public void destroy() {
+		frame.dispose();
+	}
 }

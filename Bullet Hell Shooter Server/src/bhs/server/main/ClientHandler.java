@@ -64,7 +64,6 @@ public class ClientHandler extends Thread {
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 				terminate();
-				System.exit(1);
 				break;
 			} catch (SocketException e) {
 				terminate();
@@ -72,7 +71,6 @@ public class ClientHandler extends Thread {
 			} catch (Exception e) {
 				e.printStackTrace();
 				terminate();
-				System.exit(1);
 				break;
 			}
 			if (incomingMessage == null) {
@@ -101,6 +99,9 @@ public class ClientHandler extends Thread {
 				break;
 			case "refresh room list":
 				refreshClient();
+				break;
+			case "exit":
+				terminate();
 				break;
 			}
 		}
