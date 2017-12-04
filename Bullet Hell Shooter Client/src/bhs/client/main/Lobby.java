@@ -12,6 +12,8 @@ import java.net.DatagramSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
+import javax.swing.text.DefaultCaret;
+
 import protocol.Message;
 
 /**
@@ -89,10 +91,15 @@ public class Lobby extends javax.swing.JFrame {
 		// jPanel23 = new javax.swing.JPanel();
 		jPanel23 = new PanelWithDrawing();
 		jLabel4 = new javax.swing.JLabel();
-
+		
+		jTextArea1.setDisabledTextColor(new java.awt.Color(0,0,0));
+		DefaultCaret caret = (DefaultCaret)jTextArea1.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+		
 		jPanel27 = new PanelWithImage("/data/background_retro2.jpg");
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+		setResizable(false);
 
 		jPanel27.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 255, 255), 3));
 

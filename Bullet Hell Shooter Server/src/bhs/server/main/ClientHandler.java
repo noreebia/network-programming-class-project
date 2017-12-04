@@ -119,18 +119,16 @@ public class ClientHandler extends Thread {
 	}
 
 	public void handleRoomJoinRequest(int roomID) {
-		Message message;
 		for (Room r : rooms) {
 			if (r.getID() == roomID) {
 				if (r.getState().equals("Dead") || r.getState().equals("Finished")) {
 					refreshClient();
 				} else {
 					int[] roomInfo = { r.getPort(), r.getUniquePlayerID() };
-					message = new Message("join game response", roomInfo);
+					Message message = new Message("join game response", roomInfo);
 					sendToClient(message);
-					refreshEveryClient();
 				}
-				break;
+				return;
 			}
 		}
 	}
