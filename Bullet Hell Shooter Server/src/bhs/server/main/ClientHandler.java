@@ -125,9 +125,11 @@ public class ClientHandler extends Thread {
 				if (r.getState().equals("Dead") || r.getState().equals("Finished")) {
 					refreshClient();
 				} else {
-					int[] roomInfo = { r.getPort(), r.getUniquePlayerID() };
-					Message message = new Message("join game response", roomInfo);
-					sendToClient(message);
+					if(r.getPlayerCount() <= 3) {
+						int[] roomInfo = { r.getPort(), r.getUniquePlayerID() };
+						Message message = new Message("join game response", roomInfo);
+						sendToClient(message);
+					}
 				}
 				return;
 			}
