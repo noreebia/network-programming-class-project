@@ -1,6 +1,7 @@
 package bhs.server.game.control;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import game.protocol.*;
 
@@ -30,11 +31,19 @@ public class DataController {
 	}
 	
 	public void removePlayer(short playerID) {
+		/*
 		Iterator<Player> iterator = getPlayers().iterator();
 		while(iterator.hasNext()) {
 			Player player = iterator.next();
 			if(player.getID() == playerID) {
 				iterator.remove();
+				return;
+			}
+		}
+		*/
+		for(Player p:getPlayers()) {
+			if(p.getID() == playerID) {
+				getPlayers().remove(p);
 				return;
 			}
 		}
@@ -56,7 +65,7 @@ public class DataController {
 		return data;
 	}
 	
-	public ArrayList<Player> getPlayers(){
+	public CopyOnWriteArrayList<Player> getPlayers(){
 		return data.players;
 	}
 	

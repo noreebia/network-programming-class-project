@@ -1,5 +1,6 @@
 package bhs.client.game.control;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import game.protocol.*;
 
@@ -25,7 +26,7 @@ public class DataController {
 		this.data.enemies = data.enemies;
 	}
 	
-	public ArrayList<Player> getPlayers(){
+	public CopyOnWriteArrayList<Player> getPlayers(){
 		return data.players;
 	}
 	
