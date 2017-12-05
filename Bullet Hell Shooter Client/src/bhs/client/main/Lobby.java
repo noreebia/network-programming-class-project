@@ -91,7 +91,7 @@ public class Lobby extends javax.swing.JFrame {
 		jPanel20 = new javax.swing.JPanel();
 		jRadioButton18 = new javax.swing.JRadioButton();
 		// jPanel23 = new javax.swing.JPanel();
-		jPanel23 = new PanelWithDrawing();
+		jPanel23 = new AvatarDisplayPanel(username);
 		jLabel4 = new javax.swing.JLabel();
 
 		jTextArea1.setDisabledTextColor(new java.awt.Color(0, 0, 0));
@@ -808,7 +808,7 @@ public class Lobby extends javax.swing.JFrame {
 	private javax.swing.JPanel jPanel19;
 	private javax.swing.JPanel jPanel2;
 	private javax.swing.JPanel jPanel20;
-	private PanelWithDrawing jPanel23;
+	private AvatarDisplayPanel jPanel23;
 	private javax.swing.JPanel jPanel27;
 	private javax.swing.JPanel jPanel3;
 	private javax.swing.JPanel jPanel4;

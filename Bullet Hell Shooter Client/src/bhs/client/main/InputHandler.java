@@ -28,10 +28,10 @@ public class InputHandler extends Thread {
 	DefaultListModel<String> listModel = new DefaultListModel<>();
 	World world;
 	Lobby lobby;
-	PanelWithDrawing avatarPanel;
+	AvatarDisplayPanel avatarPanel;
 
 	public InputHandler(Socket socket, ObjectInputStream ois, JTextArea chatbox, JList roomListBox, String username,
-			Lobby lobby, PanelWithDrawing avatarPanel) {
+			Lobby lobby, AvatarDisplayPanel avatarPanel) {
 		this.socket = socket;
 		this.chatbox = chatbox;
 		this.roomListBox = roomListBox;
