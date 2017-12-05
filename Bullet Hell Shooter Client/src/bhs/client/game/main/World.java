@@ -102,7 +102,7 @@ public class World extends PApplet {
 			inputHandlingThread = new InputHandlingThread(socket, dataController, playerID);
 			outputHandlingThread = new OutputHandlingThread(socket, serverAddress, serverPort, player);
 
-			displayHandler = new DisplayHandler(this, playerID, dataController, player);
+			displayHandler = new DisplayHandler(this, playerID, dataController, player, playerController);
 			physicsEngine = new PhysicsEngine(dataController, player, playerController);
 
 			executor.execute(inputHandlingThread);
@@ -189,11 +189,11 @@ public class World extends PApplet {
 	
 	public void mousePressed() {
 		if(mouseX >= width-120 && mouseY >= height - 70 && mouseX <= width -20 && mouseY <= height-20) {
-			shutdown();
+			pauseAndHide();
 		}
 	}
 	
-	public void shutdown() {
+	public void pauseAndHide() {
 		shouldRun = false;
 		noLoop();
 		background(0);
@@ -215,6 +215,66 @@ public class World extends PApplet {
 	}
 	
 	public void destroy() {
+		shouldRun = false;
+		noLoop();
+		background(0);
+		if(inputHandlingThread != null && executor != null && ses != null) {
+			inputHandlingThread.terminate();
+			executor.shutdown();
+			ses.shutdown();
+			try {
+				if (!executor.awaitTermination(800, TimeUnit.MILLISECONDS)
+						|| !ses.awaitTermination(800, TimeUnit.MILLISECONDS)) {
+					executor.shutdownNow();
+					ses.shutdownNow();
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
+		if(inputHandlingThread != null) {
+			inputHandlingThread.terminate();
+		}
+		if(executor != null) {
+			executor.shutdown();
+			try {
+				if(!executor.awaitTermination(800, TimeUnit.MILLISECONDS)) {
+					executor.shutdownNow();
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		if(ses != null) {
+			ses.shutdown();
+			try {
+				if(!ses.awaitTermination(800, TimeUnit.MILLISECONDS)) {
+					ses.shutdownNow();
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		if(socket != null) {
+			socket.close();
+		}
+		/*
+		executor.shutdown();
+		ses.shutdown();
+		try {
+			if (!executor.awaitTermination(800, TimeUnit.MILLISECONDS)
+					|| !ses.awaitTermination(800, TimeUnit.MILLISECONDS)) {
+				executor.shutdownNow();
+				ses.shutdownNow();
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		*/
+		//socket.close();
 		frame.dispose();
+		frame.setVisible(false);
 	}
 }

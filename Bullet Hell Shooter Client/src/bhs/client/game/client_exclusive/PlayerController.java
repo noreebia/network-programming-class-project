@@ -130,6 +130,7 @@ public class PlayerController {
 				player.setHP((short) (player.getHP() - 1));
 				if(player.getHP() <= 0) {
 					player.setAlive(false);
+					player.setRGB((short)211, (short)211, (short)211);
 					stopShooting();
 					return;
 				}else {
@@ -153,6 +154,12 @@ public class PlayerController {
 				setPlayerInvicibility(false);
 			}
 		}
+	}
+	
+	public void revivePlayer() {
+		player.setAlive(true);
+		player.setHP((short)3);
+		player.setRGB(backupRGB[0], backupRGB[1], backupRGB[2]);
 	}
 
 	public void shoot() {
@@ -193,5 +200,9 @@ public class PlayerController {
 	
 	public boolean isPlayerAlive() {
 		return player.isAlive();
+	}
+	
+	public Player getPlayer() {
+		return player;
 	}
 }

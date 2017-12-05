@@ -677,6 +677,7 @@ public class Lobby extends javax.swing.JFrame {
 		}
 		//inputHandler.terminate();
 		try {
+			oos.close();
 			socket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -694,6 +695,7 @@ public class Lobby extends javax.swing.JFrame {
 		}
 		//inputHandler.terminate();
 		try {
+			oos.close();
 			socket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -769,6 +771,14 @@ public class Lobby extends javax.swing.JFrame {
 	
 	public boolean hasPressedExit() {
 		return pressedExit;
+	}
+	
+	public void closeOutputStream() {
+		try {
+			oos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 

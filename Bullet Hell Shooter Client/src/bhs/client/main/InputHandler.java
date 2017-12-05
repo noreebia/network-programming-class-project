@@ -21,7 +21,7 @@ public class InputHandler extends Thread {
 
 	Socket socket;
 	ObjectInputStream ois;
-	boolean run = true;
+	volatile boolean run = true;
 	JTextArea chatbox;
 	JList roomListBox;
 	String username;
@@ -76,20 +76,40 @@ public class InputHandler extends Thread {
 				}
 			} catch (SocketException e) {
 				e.printStackTrace();
+				try {
+					ois.close();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}			
 				if (lobby.hasPressedExit()) {
 					terminate();
+					break;
 				} else {
 					/* display error message because it means server has shut down, not that user has pressed exit*/
+					lobby.closeOutputStream();
+					try {
+						socket.close();
+						ErrorScreen errorScreen = new ErrorScreen();
+						errorScreen.setVisible(true);
+						lobby.dispose();
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+					terminate();
+					break;
 				}
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 				terminate();
+				break;
 			} catch (IOException e) {
 				e.printStackTrace();
 				terminate();
+				break;
 			} catch (Exception e) {
 				e.printStackTrace();
 				terminate();
+				break;
 			}
 		}
 		world.destroy();

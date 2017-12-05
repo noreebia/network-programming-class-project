@@ -24,14 +24,16 @@ public class DisplayHandler {
 
 	Player user;
 	PFont font;
+	PlayerController playerController;
 		
 	boolean hasGameEnded = false;
 
-	public DisplayHandler(PApplet world, short connectionID, DataController dataController, Player user) {
+	public DisplayHandler(PApplet world, short connectionID, DataController dataController, Player user, PlayerController playerController) {
 		this.world = world;
 		this.connectionID = connectionID;
 		this.dataController = dataController;
-		this.user = user;
+		this.playerController = playerController;
+		this.user = playerController.getPlayer();
 
 		int i;
 		for (i = 0; i < numberOfParticleSystems; i++) {
@@ -71,7 +73,8 @@ public class DisplayHandler {
 	}
 
 	public void drawUser() {
-		world.pushMatrix();
+		
+/*		world.pushMatrix();
 		world.translate(user.getX(), user.getY());
 		for (int i = 0; i < 3; i++) {
 			world.stroke(255);
@@ -94,7 +97,9 @@ public class DisplayHandler {
 		world.vertex(0, 15);
 		world.vertex(user.getSize(), 5);
 		world.endShape(world.CLOSE);
-		world.popMatrix();
+		world.popMatrix();	
+*/	
+	drawPlayer(user);	
 	}
 	
 	public void drawPlayer(Player player) {		
@@ -111,8 +116,12 @@ public class DisplayHandler {
 		}
 		world.textSize(15);
 		world.fill(255);
-		float widthOfUsername = world.textWidth(player.getUsername());
-		world.text(player.getUsername(), -widthOfUsername / 2, -20);
+		float temp = world.textWidth("<DEAD>");
+		if(!player.isAlive()) {
+			world.text("<DEAD>", -temp/2, -40);
+		}
+		temp = world.textWidth(player.getUsername());
+		world.text(player.getUsername(), -temp / 2, -20);
 		world.rotate((float) (Math.PI / 4 * player.getDirection()));
 		setStrokeAndFillOf(player);
 		world.beginShape();
@@ -212,8 +221,9 @@ public class DisplayHandler {
 		if (dataController.hasLevelChanged()) {
 			dataController.setLevelChanged(false);
 			timeOfLevelChange = System.currentTimeMillis();
-			user.setAlive(true);
+/*			user.setAlive(true);
 			user.setHP((short)3);
+*/			playerController.revivePlayer();
 		} else if (System.currentTimeMillis() - timeOfLevelChange <= durationOfLevelChangeDisplay) {
 			world.fill(255);
 			world.textSize(70);
