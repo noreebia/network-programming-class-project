@@ -66,8 +66,8 @@ public class OutputHandlingThread implements Runnable {
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
-						System.out.println("Sent to:" + c.getAddress().toString());
 					} else {
+						System.out.println("Removed client with ID:" + c.getID());
 						dataController.removePlayer((short) c.getID());
 						clients.remove(c);
 						if(clients.size() <= 0) {

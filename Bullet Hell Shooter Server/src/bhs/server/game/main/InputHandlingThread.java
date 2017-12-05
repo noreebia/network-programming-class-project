@@ -40,25 +40,19 @@ public class InputHandlingThread implements Runnable {
 	public void run() {
 		while (shouldRun()) {
 			try {
-				System.out.println("Receiving");
 				packet = new DatagramPacket(buf, buf.length);
-
 				socket.receive(packet);
 
-				System.out.println("Received packet");
 				bais = new ByteArrayInputStream(packet.getData());
-
 				is = new ObjectInputStream(bais);
 
-				System.out.println("attempting to update data");
-				System.out.println("current num of players: " + dataController.getPlayers().size());
 				try {
 					temp = (Player) is.readObject();
 					dataController.updatePlayer(temp);
 
 					if (dataController.isNewPlayer()) {
 						addClient(temp.getID(), packet.getAddress(), packet.getPort(), System.currentTimeMillis());
-						System.out.println("new player! new player's id: " + temp.getID());
+						System.out.println("New player has connected to game. New player's ID: " +temp.getID());
 					} else {
 						for (Client c : clients) {
 							if (c.getID() == temp.getID()) {
@@ -67,10 +61,6 @@ public class InputHandlingThread implements Runnable {
 							}
 						}
 					}
-
-					System.out.println("received player object from client and data updated");
-					System.out.println("number of player bullets: " + temp.getBullets().size());
-
 					for (Integer i : temp.getHitEnemies()) {
 						enemySystem.getOriginals().get(i).getHit();
 						if (enemySystem.getOriginals().get(i).isActive()) {

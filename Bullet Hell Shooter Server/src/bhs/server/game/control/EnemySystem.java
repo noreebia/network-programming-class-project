@@ -73,7 +73,6 @@ public class EnemySystem {
 	}
 
 	public void run() {
-		System.out.println("enemy system run method");
 		if (dataController.getPlayers().size() > 0) {
 			for (Enemy e : originals) {
 				if (e.isActive()) {
