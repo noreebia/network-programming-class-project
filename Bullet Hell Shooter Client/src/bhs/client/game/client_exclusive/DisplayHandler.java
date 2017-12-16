@@ -118,20 +118,11 @@ public class DisplayHandler {
 	public void drawPlayersAndBullets() {
 		for (Player p : dataController.getPlayers()) {
 			if (p.getID() != connectionID) {
-				System.out.println("player's id: " + p.getID());
-				System.out.println("my id: " + connectionID);
-				System.out.println("drawing player...");
 				drawPlayer(p);
 			} else {
-				System.out.println("player's id: " + p.getID());
-				System.out.println("my id: " + connectionID);
-				System.out.println("drawing me...");
-
 				world.fill(255, 128, 0);
 				world.ellipse(p.getX(), p.getY(), 5, 5);
 			}
-			// System.out.println("Num of player bullets: " + p.getBullets().size());
-
 			for (Bullet b : p.getBullets()) {
 				drawBullet(b);
 			}
@@ -196,9 +187,7 @@ public class DisplayHandler {
 		if (dataController.hasLevelChanged()) {
 			dataController.setLevelChanged(false);
 			timeOfLevelChange = System.currentTimeMillis();
-			/*
-			 * user.setAlive(true); user.setHP((short)3);
-			 */ playerController.revivePlayer();
+			playerController.revivePlayer();
 		} else if (System.currentTimeMillis() - timeOfLevelChange <= durationOfLevelChangeDisplay) {
 			world.fill(255);
 			world.textSize(70);

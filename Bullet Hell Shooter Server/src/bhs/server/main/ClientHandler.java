@@ -52,7 +52,6 @@ public class ClientHandler extends Thread {
 		String request;
 		String messageData;
 		while (shouldRun()) {
-			System.out.println("Listening for client input...");
 			try {
 				incomingMessage = (Message) ois.readObject();
 			} catch (ClassNotFoundException e) {
@@ -72,8 +71,8 @@ public class ClientHandler extends Thread {
 				break;
 			}
 			request = incomingMessage.getContents();
-			System.out.println("From client: " + client.getNickname());
-			System.out.println("Message contents: " + request);
+			System.out.println("Recevied message from client  " + client.getNickname());
+			System.out.println("Client request: " + request);
 			switch (request) {
 			case "chat":
 				messageData = (String) incomingMessage.getData();
@@ -97,6 +96,7 @@ public class ClientHandler extends Thread {
 			case "exit":
 				terminate();
 				break;
+			default:
 			}
 		}
 		System.out.println("Client has disconnected. Terminating appointed client handler.");
@@ -118,7 +118,7 @@ public class ClientHandler extends Thread {
 				if (r.getState().equals("Dead") || r.getState().equals("Finished")) {
 					refreshClient();
 				} else {
-					if(r.getPlayerCount() <= 3) {
+					if (r.getPlayerCount() <= 3) {
 						int[] roomInfo = { r.getPort(), r.getUniquePlayerID() };
 						Message message = new Message("join game response", roomInfo);
 						sendToClient(message);

@@ -51,9 +51,9 @@ public class InputHandler extends Thread {
 		while (shouldRun()) {
 			try {
 				message = (Message) ois.readObject();
-				System.out.println("Received message from server");
-
+				// System.out.println("Received message from server");
 				messageContents = message.getContents();
+				System.out.println("Received " + messageContents + " message from server");
 				switch (messageContents) {
 				case "chatboxUpdate":
 					String messageData = (String) message.getData();
@@ -68,23 +68,25 @@ public class InputHandler extends Thread {
 					break;
 				case "join game response":
 					int[] roomInfo = (int[]) message.getData();
-					int[] avatarColor = { avatarPanel.getBackground().getRed(), avatarPanel.getBackground().getGreen(),
-							avatarPanel.getBackground().getBlue() };
 					world.setServerInfo(socket.getInetAddress().getHostAddress(), roomInfo[0], roomInfo[1]);
 					world.reset(avatarPanel.getAvatarColor());
 					break;
+				default:
 				}
 			} catch (SocketException e) {
 				try {
 					ois.close();
 				} catch (IOException e1) {
 					e1.printStackTrace();
-				}			
+				}
 				if (lobby.hasPressedExit()) {
 					terminate();
 					break;
 				} else {
-					/* display error message because it means server has shut down, not that user has pressed exit*/
+					/*
+					 * display error message because it means server has shut down, not that user
+					 * has pressed exit
+					 */
 					lobby.closeOutputStream();
 					try {
 						socket.close();

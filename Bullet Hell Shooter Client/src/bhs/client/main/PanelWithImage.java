@@ -43,7 +43,6 @@ public class PanelWithImage extends javax.swing.JPanel{
 		int imageHeight = backgroundImage.getHeight();
 		int panelWidth = this.getWidth();
 		int panelHeight = this.getHeight();
-		System.out.println("width:" + this.getWidth() + "height: " + this.getHeight() );
 		if(desiredImagePart == "middle") {
 			g.drawImage(backgroundImage, 0, 0, panelWidth, panelHeight, imageWidth/2 - (panelWidth * (imageHeight/panelHeight))/2, 0, imageWidth/2 + (panelWidth * (imageHeight/panelHeight))/2, imageHeight, this);
 		}else{

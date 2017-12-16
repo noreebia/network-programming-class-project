@@ -43,7 +43,6 @@ public class BulletSystem {
 		fire();
 		manageBullets();
 		displayBullets();
-		System.out.println("Active bullets: " + bullets.size());
 	}
 
 	public void removeInactiveBullets() {
@@ -78,7 +77,6 @@ public class BulletSystem {
 
 			if (bullets.get(i).isOutOfMap(world.width, world.height) || !bullets.get(i).isActive()) {
 				bullets.remove(i);
-
 			}
 		}
 	}
