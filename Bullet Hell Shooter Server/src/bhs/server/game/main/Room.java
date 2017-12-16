@@ -46,6 +46,7 @@ public class Room {
 	String state = "Joinable";
 	
 	public Room(int id) {
+		System.out.println("Room number " + id + "created");
 		this.id = id;
 		enemySystem.resetEnemies(10);
 
@@ -61,23 +62,6 @@ public class Room {
 		executor.execute(inputHandlingThread);
 		ses.scheduleAtFixedRate(outputHandlingThread, 0, 8, TimeUnit.MILLISECONDS);
 	}
-
-	/*
-	public Room() {
-		enemySystem.resetEnemies(10);
-
-		try {
-			socket = new DatagramSocket();
-		} catch (SocketException e) {
-			e.printStackTrace();
-		}
-		
-		System.out.println(socket.getLocalPort());
-		
-		executor.execute(new InputHandlingThread(socket, dataController, enemySystem, clients));
-		ses.scheduleAtFixedRate(new OutputHandlingThread(this, socket, dataController, clients, enemySystem), 0, 8, TimeUnit.MILLISECONDS);
-	}
-	*/
 
 	public short getConnectionCount() {
 		return connectionCount;
@@ -125,5 +109,6 @@ public class Room {
 			ses.shutdownNow();
 		}
 		socket.close();
+		System.out.println("Room number " + id + " shutting down");
 	}
 }

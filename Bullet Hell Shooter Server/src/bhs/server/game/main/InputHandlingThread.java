@@ -30,7 +30,6 @@ public class InputHandlingThread implements Runnable {
 
 	public InputHandlingThread(DatagramSocket ioSocket, DataController dataController, EnemySystem enemySystem,
 			CopyOnWriteArrayList<Client> clients) {
-		System.out.println("Input handler created.");
 		this.socket = ioSocket;
 		this.dataController = dataController;
 		this.enemySystem = enemySystem;
@@ -52,7 +51,7 @@ public class InputHandlingThread implements Runnable {
 
 					if (dataController.isNewPlayer()) {
 						addClient(temp.getID(), packet.getAddress(), packet.getPort(), System.currentTimeMillis());
-						System.out.println("New player has connected to game. New player's ID: " +temp.getID());
+						System.out.println("A new player has connected. Name of player: " +temp.getUsername());
 					} else {
 						for (Client c : clients) {
 							if (c.getID() == temp.getID()) {

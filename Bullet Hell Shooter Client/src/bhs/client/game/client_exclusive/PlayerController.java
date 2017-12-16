@@ -79,18 +79,27 @@ public class PlayerController {
 	}
 
 	public void movePlayer() {
+		float xSpeed = 0;
+		float ySpeed = 0;
 		if (isMoving(0)) {
-			player.move(0, -speed);
+			ySpeed -= speed;
 		}
 		if (isMoving(1)) {
-			player.move(-speed, 0);
+			xSpeed -= speed;
 		}
 		if (isMoving(2)) {
-			player.move(0, speed);
+			ySpeed += speed;
 		}
 		if (isMoving(3)) {
-			player.move(speed, 0);
+			xSpeed += speed;
 		}
+		if(player.getX() + xSpeed > world.width || player.getX() + xSpeed < 0) {
+			xSpeed = 0;
+		}
+		if(player.getY() + ySpeed > world.height || player.getY() + ySpeed < 0) {
+			ySpeed = 0;
+		}
+		player.move(xSpeed, ySpeed);
 	}
 
 	public void setDirection() {

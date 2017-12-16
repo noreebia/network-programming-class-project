@@ -43,13 +43,12 @@ public class Server {
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
-			
 			userChosenNickname = (String) incomingMessage.getData();
+			System.out.println("Received login request");
 
 			if (isDuplicateNickname(userChosenNickname)) {
 				outgoingMessage = new Message("login response", "duplicate");
-				
-				System.out.println("duplicate nickname");
+				System.out.println("Request Rejected. Duplicate Nickname exists");
 			} else {				
 				outgoingMessage = new Message(null, "accepted");
 
@@ -60,11 +59,11 @@ public class Server {
 				clientHandler.start();
 				clientHandlingThreads.add(clientHandler);
 				
-				System.out.println("success");
+				System.out.println("Client login successful. Added client count.");
 			}
 			oos.writeObject(outgoingMessage);
 
-			System.out.println("current connected clients: " + clients.size());
+			System.out.println("Current connected clients: " + clients.size());
 			System.out.println("Current client handling threads: " + clientHandlingThreads.size());
 		}
 	}

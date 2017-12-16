@@ -11,7 +11,6 @@ import java.net.InetAddress;
 
 import game.protocol.*;
 
-
 public class OutputHandlingThread implements Runnable {
 
 	InetAddress serverAddress;
@@ -25,9 +24,8 @@ public class OutputHandlingThread implements Runnable {
 	Player player;
 
 	byte[] buf;
-	
+
 	public OutputHandlingThread(DatagramSocket socket, InetAddress serverAddress, int serverPort, Player player) {
-		System.out.println("Output handler created");
 		this.serverAddress = serverAddress;
 		this.socket = socket;
 		this.player = player;
@@ -44,32 +42,27 @@ public class OutputHandlingThread implements Runnable {
 		try {
 			baos.reset();
 			os = new ObjectOutputStream(baos);
+
 			os.writeObject(player);
 
 			buf = baos.toByteArray();
 
 			packet = new DatagramPacket(buf, buf.length, serverAddress, serverPort);
-			
-			/*
-			System.out.println("Number of bullets: " + player.getBullets().size());
-			System.out.println("Length of sent data in bytes: " + buf.length);
-			*/
 			try {
 				socket.send(packet);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
-			System.out.println("Sent");
-			System.out.println("Player ID: " + player.getID());
-			if(player.getHitEnemies().size() > 0) {
+
+			if (player.getHitEnemies().size() > 0) {
 				player.getHitEnemies().clear();
 			}
-			if(player.isHit()) {
+			if (player.isHit()) {
 				player.setHit(false);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 }

@@ -28,7 +28,6 @@ public class OutputHandlingThread implements Runnable {
 
 	public OutputHandlingThread(Room room, DatagramSocket socket, DataController dataController,
 			CopyOnWriteArrayList<Client> clients, EnemySystem enemySystem) {
-		System.out.println("OutputHandlingThread created");
 		this.room = room;
 		this.socket = socket;
 		try {
@@ -48,7 +47,6 @@ public class OutputHandlingThread implements Runnable {
 				if(enemySystem.isEveryPlayerDead()) {
 					room.setState("Finished");
 				}
-
 				try {
 					baos.reset();
 					os = new ObjectOutputStream(baos);
@@ -67,9 +65,9 @@ public class OutputHandlingThread implements Runnable {
 							e.printStackTrace();
 						}
 					} else {
-						System.out.println("Removed client with ID:" + c.getID());
 						dataController.removePlayer((short) c.getID());
 						clients.remove(c);
+						System.out.println("A player has left the game. Player's in-game ID number: " + c.getID());
 						if(clients.size() <= 0) {
 							room.shutdown();
 							room.setState("Dead");
@@ -82,7 +80,6 @@ public class OutputHandlingThread implements Runnable {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.exit(1);
 			}
 		}
 	}

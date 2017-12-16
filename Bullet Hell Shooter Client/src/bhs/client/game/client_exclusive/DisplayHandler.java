@@ -25,10 +25,11 @@ public class DisplayHandler {
 	Player user;
 	PFont font;
 	PlayerController playerController;
-		
+
 	boolean hasGameEnded = false;
 
-	public DisplayHandler(PApplet world, short connectionID, DataController dataController, Player user, PlayerController playerController) {
+	public DisplayHandler(PApplet world, short connectionID, DataController dataController, Player user,
+			PlayerController playerController) {
 		this.world = world;
 		this.connectionID = connectionID;
 		this.dataController = dataController;
@@ -52,12 +53,12 @@ public class DisplayHandler {
 		runParticleSystems();
 		displayGameStats();
 		displayLevelChange();
-		if(hasGameEnded) {
+		if (hasGameEnded) {
 			notifyEndOfGame();
 		}
 		displayExitButton();
 	}
-	
+
 	public void drawBackground() {
 		world.background(0);
 	}
@@ -73,36 +74,10 @@ public class DisplayHandler {
 	}
 
 	public void drawUser() {
-		
-/*		world.pushMatrix();
-		world.translate(user.getX(), user.getY());
-		for (int i = 0; i < 3; i++) {
-			world.stroke(255);
-			if (i + 1 > user.getHP()) {
-				world.fill(0);
-			} else {
-				world.fill(255);
-			}
-			world.ellipse((i - 1) * 15, 30, 10, 10);
-		}
-		world.textSize(15);
-		world.fill(255);
-		float widthOfUsername= world.textWidth(user.getUsername());
-		world.text(user.getUsername(), -widthOfUsername / 2, -20);
-		world.rotate((float) (Math.PI / 4 * user.getDirection()));
-		setStrokeAndFillOf(user);
-		world.beginShape();
-		world.vertex(0, -user.getSize() - 5);
-		world.vertex(-user.getSize(), 5);
-		world.vertex(0, 15);
-		world.vertex(user.getSize(), 5);
-		world.endShape(world.CLOSE);
-		world.popMatrix();	
-*/	
-	drawPlayer(user);	
+		drawPlayer(user);
 	}
-	
-	public void drawPlayer(Player player) {		
+
+	public void drawPlayer(Player player) {
 		world.pushMatrix();
 		world.translate(player.getX(), player.getY());
 		for (int i = 0; i < 3; i++) {
@@ -117,8 +92,8 @@ public class DisplayHandler {
 		world.textSize(15);
 		world.fill(255);
 		float temp = world.textWidth("<DEAD>");
-		if(!player.isAlive()) {
-			world.text("<DEAD>", -temp/2, -40);
+		if (!player.isAlive()) {
+			world.text("<DEAD>", -temp / 2, -40);
 		}
 		temp = world.textWidth(player.getUsername());
 		world.text(player.getUsername(), -temp / 2, -20);
@@ -203,15 +178,15 @@ public class DisplayHandler {
 		world.textSize(26);
 		/* display level */
 		float temp = world.textWidth("LEVEL " + dataController.getLevel());
-		world.text("LEVEL " + dataController.getLevel(), world.width/2 - temp/2, 30);
+		world.text("LEVEL " + dataController.getLevel(), world.width / 2 - temp / 2, 30);
 		/* display number of enemies left alive */
 		temp = world.textWidth("ENEMIES LEFT: " + aliveEnemies);
 		world.text("ENEMIES LEFT: " + aliveEnemies, world.width - (temp + textOffset), textOffset);
 		alivePlayers = dataController.getAlivePlayers();
 		temp = world.textWidth("PLAYERS ALIVE: " + alivePlayers);
 		world.text("PLAYERS ALIVE: " + alivePlayers, textOffset, textOffset);
-		if(alivePlayers <= 0) {
-			if(!user.isAlive()) {
+		if (alivePlayers <= 0) {
+			if (!user.isAlive()) {
 				hasGameEnded = true;
 			}
 		}
@@ -221,40 +196,40 @@ public class DisplayHandler {
 		if (dataController.hasLevelChanged()) {
 			dataController.setLevelChanged(false);
 			timeOfLevelChange = System.currentTimeMillis();
-/*			user.setAlive(true);
-			user.setHP((short)3);
-*/			playerController.revivePlayer();
+			/*
+			 * user.setAlive(true); user.setHP((short)3);
+			 */ playerController.revivePlayer();
 		} else if (System.currentTimeMillis() - timeOfLevelChange <= durationOfLevelChangeDisplay) {
 			world.fill(255);
 			world.textSize(70);
 			float temp = world.textWidth("LEVEL " + dataController.getLevel());
-			world.text("LEVEL " + dataController.getLevel(), world.width / 2 - temp / 2,
-					world.height / 2 - 35);
+			world.text("LEVEL " + dataController.getLevel(), world.width / 2 - temp / 2, world.height / 2 - 35);
 		}
 	}
-	
+
 	public void notifyEndOfGame() {
-		world.fill(0,0,0, 128);
-		world.rect(0,0, world.width, world.height);
-		
+		world.fill(0, 0, 0, 128);
+		world.rect(0, 0, world.width, world.height);
+
 		world.fill(255);
 		world.textSize(70);
 		float temp = world.textWidth("END OF GAME");
-		world.text("END OF GAME", world.width/2 - temp/2, world.height/2-35);
+		world.text("END OF GAME", world.width / 2 - temp / 2, world.height / 2 - 35);
 	}
-	
+
 	public void displayExitButton() {
 		world.textSize(26);
-		world.stroke(0,128,255);
-		if(world.mouseX >= world.width-120 && world.mouseY >= world.height - 70 && world.mouseX <= world.width -20 && world.mouseY <= world.height-20) {
+		world.stroke(0, 128, 255);
+		if (world.mouseX >= world.width - 120 && world.mouseY >= world.height - 70 && world.mouseX <= world.width - 20
+				&& world.mouseY <= world.height - 20) {
 			world.fill(153, 204, 255);
-		}else {
+		} else {
 			world.fill(0);
 		}
-		world.rect(world.width-120, world.height-70, 100, 50);
-		
-		world.fill(0,128,255);
+		world.rect(world.width - 120, world.height - 70, 100, 50);
+
+		world.fill(0, 128, 255);
 		float temp = world.textWidth("EXIT");
-		world.text("EXIT", world.width - 120 + (100 - temp)/2, world.height-35);
+		world.text("EXIT", world.width - 120 + (100 - temp) / 2, world.height - 35);
 	}
 }

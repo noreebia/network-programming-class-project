@@ -233,7 +233,6 @@ public class World extends PApplet {
 			}
 		}
 		
-		
 		if(inputHandlingThread != null) {
 			inputHandlingThread.terminate();
 		}
@@ -260,20 +259,6 @@ public class World extends PApplet {
 		if(socket != null) {
 			socket.close();
 		}
-		/*
-		executor.shutdown();
-		ses.shutdown();
-		try {
-			if (!executor.awaitTermination(800, TimeUnit.MILLISECONDS)
-					|| !ses.awaitTermination(800, TimeUnit.MILLISECONDS)) {
-				executor.shutdownNow();
-				ses.shutdownNow();
-			}
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		*/
-		//socket.close();
 		frame.dispose();
 		frame.setVisible(false);
 	}

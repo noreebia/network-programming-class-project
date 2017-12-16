@@ -1,6 +1,8 @@
 package bhs.client.game.client_exclusive;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Vector;
 
 import game.protocol.Bullet;
 import game.protocol.Player;
@@ -14,18 +16,18 @@ public class BulletSystem {
 	int width = 4;
 	int lastFiredTime = 0;
 	float reloadTime = 100;
-	
+
 	float bulletSpeedModifier;
 	float bulletSpeedModifierStraight = 15;
 	float bulletSpeedModifierDiagonal = (float) (bulletSpeedModifierStraight / Math.sqrt(2));
 	float bulletSpeedX, bulletSpeedY;
-	
-	public ArrayList<Bullet> bullets = new ArrayList<Bullet>();
-	
+
+	public Vector<Bullet> bullets = new Vector<Bullet>();
+
 	public ArrayList<Integer> collidedBullets = new ArrayList<Integer>();
-	
+
 	public short[] bulletRGB;
-	
+
 	public BulletSystem(PApplet world, Player owner, short[] bulletRGB) {
 		this.world = world;
 		this.owner = owner;
@@ -43,52 +45,56 @@ public class BulletSystem {
 		displayBullets();
 		System.out.println("Active bullets: " + bullets.size());
 	}
-	
+
 	public void removeInactiveBullets() {
 		int i;
-		for(i=0; i< bullets.size();i++) {
-			if(!bullets.get(i).isActive()) {
+		for (i = 0; i < bullets.size(); i++) {
+			if (!bullets.get(i).isActive()) {
 				bullets.remove(i);
 			}
 		}
 	}
-	
+
 	public void fire() {
 		if (isFiring) {
-			float bulletSpawnLocationX = (float) (owner.x + 1.5 * Math.sin(owner.getDirection() * Math.PI / 4) * length);
-			float bulletSpawnLocationY = (float) (owner.y - 1.5 * Math.cos(owner.getDirection() * Math.PI / 4) * length);
+			float bulletSpawnLocationX = (float) (owner.x
+					+ 1.5 * Math.sin(owner.getDirection() * Math.PI / 4) * length);
+			float bulletSpawnLocationY = (float) (owner.y
+					- 1.5 * Math.cos(owner.getDirection() * Math.PI / 4) * length);
 
 			if (world.millis() - lastFiredTime >= reloadTime) {
 				bullets.add(new Bullet(bulletSpawnLocationX, bulletSpawnLocationY, owner.getDirection()));
-				bullets.get(bullets.size()-1).setRGB(getBulletRGB(0), getBulletRGB(1), getBulletRGB(2));
+
+				bullets.get(bullets.size() - 1).setRGB(getBulletRGB(0), getBulletRGB(1), getBulletRGB(2));
 				lastFiredTime = world.millis();
 			}
 		}
 	}
-	
+
 	public void manageBullets() {
 		int i;
-		for(i =0; i < bullets.size(); i++) {
+		for (i = 0; i < bullets.size(); i++) {
 			moveBullet(bullets.get(i));
 
-			if( bullets.get(i).isOutOfMap(world.width, world.height) || !bullets.get(i).isActive()) {
+			if (bullets.get(i).isOutOfMap(world.width, world.height) || !bullets.get(i).isActive()) {
 				bullets.remove(i);
+
 			}
 		}
 	}
-	
+
 	public void displayBullets() {
-		for(Bullet b: bullets) {
-			world.stroke(b.getRGB(0),b.getRGB(1), b.getRGB(2));
+		for (Bullet b : bullets) {
+			world.stroke(b.getRGB(0), b.getRGB(1), b.getRGB(2));
 			world.fill(b.getRGB(0), b.getRGB(1), b.getRGB(2));
 			world.ellipse(b.getX(), b.getY(), 2 * b.size, 2 * b.size);
 		}
 	}
-	
+
 	public void moveBullet(Bullet b) {
 		bulletSpeedX = 0;
 		bulletSpeedY = 0;
-		switch(b.direction) {
+		switch (b.direction) {
 		case 0:
 			bulletSpeedY--;
 			bulletSpeedModifier = bulletSpeedModifierStraight;
@@ -129,18 +135,18 @@ public class BulletSystem {
 		b.move(bulletSpeedX * bulletSpeedModifier, bulletSpeedY * bulletSpeedModifier);
 	}
 
-	public ArrayList<Bullet> getBullets(){
+	public Vector<Bullet> getBullets() {
 		return bullets;
 	}
-		
+
 	public void startFiring() {
 		isFiring = true;
 	}
-	
+
 	public void stopFiring() {
 		isFiring = false;
 	}
-	
+
 	public short getBulletRGB(int i) {
 		return bulletRGB[i];
 	}

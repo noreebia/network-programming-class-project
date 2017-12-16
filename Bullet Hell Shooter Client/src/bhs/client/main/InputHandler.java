@@ -51,7 +51,7 @@ public class InputHandler extends Thread {
 		while (shouldRun()) {
 			try {
 				message = (Message) ois.readObject();
-				System.out.println("received message from server");
+				System.out.println("Received message from server");
 
 				messageContents = message.getContents();
 				switch (messageContents) {
@@ -75,7 +75,6 @@ public class InputHandler extends Thread {
 					break;
 				}
 			} catch (SocketException e) {
-				e.printStackTrace();
 				try {
 					ois.close();
 				} catch (IOException e1) {

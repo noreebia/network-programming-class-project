@@ -28,7 +28,6 @@ public class InputHandlingThread implements Runnable {
 	boolean run = true;
 
 	public InputHandlingThread(DatagramSocket socket, DataController dataController, short connectionID) {
-		System.out.println("Input handler created.");
 		this.socket = socket;
 		this.dataController = dataController;
 		this.connectionID = connectionID;
@@ -39,8 +38,7 @@ public class InputHandlingThread implements Runnable {
 			try {
 				packet = new DatagramPacket(buf, buf.length);
 				socket.receive(packet);
-
-				//System.out.println("Received packet");
+				
 				bais = new ByteArrayInputStream(packet.getData());
 				is = new ObjectInputStream(bais);
 
@@ -54,7 +52,6 @@ public class InputHandlingThread implements Runnable {
 					System.exit(1);
 				}
 				dataController.updateData(temp);
-				System.out.println("data received and cloned");
 				is.close();
 			} catch (Exception e) {
 				e.printStackTrace();

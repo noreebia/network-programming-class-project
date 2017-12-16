@@ -36,11 +36,6 @@ public class ClientHandler extends Thread {
 		this.clientHandlingThreads = clientHandlingThreads;
 		this.rooms = rooms;
 		this.uniqueRoomID = uniqueRoomID;
-		/*
-		 * try { oos = new ObjectOutputStream(client.getSocket().getOutputStream()); ois
-		 * = new ObjectInputStream(client.getSocket().getInputStream()); } catch
-		 * (Exception e) { e.printStackTrace(); }
-		 */
 
 		try {
 			oos = client.getOutputStream();
@@ -56,9 +51,8 @@ public class ClientHandler extends Thread {
 		Message outgoingMessage = null;
 		String request;
 		String messageData;
-		ArrayList<String> listOfRooms;
 		while (shouldRun()) {
-			System.out.println("listening for client input...");
+			System.out.println("Listening for client input...");
 			try {
 				incomingMessage = (Message) ois.readObject();
 			} catch (ClassNotFoundException e) {
@@ -105,7 +99,7 @@ public class ClientHandler extends Thread {
 				break;
 			}
 		}
-		System.out.println("client has disconnected. terminating");
+		System.out.println("Client has disconnected. Terminating appointed client handler.");
 		disconnectClient();
 		removeSelfFromArray();
 		return;
@@ -114,7 +108,6 @@ public class ClientHandler extends Thread {
 	public int createRoom() {
 		int newRoomID = uniqueRoomID.getAndIncrement();
 		Room newRoom = new Room(newRoomID);
-		int newRoomPort = newRoom.getPort();
 		rooms.add(newRoom);
 		return newRoomID;
 	}

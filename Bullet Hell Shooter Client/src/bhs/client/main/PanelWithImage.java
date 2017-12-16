@@ -17,9 +17,7 @@ public class PanelWithImage extends javax.swing.JPanel{
 	PanelWithImage(String fileName){
 		super();
 		try {
-			//backgroundImage = ImageIO.read(new File("data/background_sun.jpg"));
 			URL url = getClass().getResource(fileName);
-			//backgroundImage = ImageIO.read(new File(fileName));
 			backgroundImage = ImageIO.read(url);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -31,7 +29,6 @@ public class PanelWithImage extends javax.swing.JPanel{
 		super();
 		this.desiredImagePart = desiredImagePart;
 		try {
-			//backgroundImage = ImageIO.read(new File("data/background_sun.jpg"));
 			URL url = getClass().getResource(fileName);
 
 			backgroundImage = ImageIO.read(url);

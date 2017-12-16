@@ -1,6 +1,7 @@
 package game.protocol;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
 public class Player extends GameObject{
 
@@ -11,14 +12,14 @@ public class Player extends GameObject{
 	short playerID;
 	short direction = 0;
 	
-	ArrayList<Bullet> bullets;
+	Vector<Bullet> bullets;
 	ArrayList<Integer> enemiesHit = new ArrayList<Integer>();
 	
 	public Player() {
 		
 	}
 	
-	public Player(ArrayList<Bullet> bullets) {
+	public Player(Vector<Bullet> bullets) {
 		this.bullets = bullets;
 	}
 	
@@ -52,11 +53,11 @@ public class Player extends GameObject{
 		this.setAlive(player.isAlive());
 	}
 	
-	public void setBullets(ArrayList<Bullet> bullets) {
+	public void setBullets(Vector<Bullet> bullets) {
 		this.bullets = bullets;
 	}
 	
-	public ArrayList<Bullet> getBullets(){
+	public Vector<Bullet> getBullets(){
 		return bullets;
 	}
 	
