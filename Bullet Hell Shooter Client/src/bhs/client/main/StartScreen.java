@@ -108,7 +108,7 @@ public class StartScreen extends javax.swing.JFrame {
 		jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 		jLabel2.setForeground(new java.awt.Color(0, 255, 255));
 		jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		jLabel2.setText("PORT NUMBER IS 5000");
+		jLabel2.setText("PORT NUMBER IS 50000");
 
 		jLabel3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 		jLabel3.setForeground(new java.awt.Color(0, 255, 255));
