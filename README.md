@@ -1,7 +1,4 @@
 # network-programming-class-project
-
-Term project for Network Programming class.
-
 Bullet Hell Shooter is a 2D bullet hell style game where you can dodge and destroy enemies with up to 4 other people.
 
 Controls
